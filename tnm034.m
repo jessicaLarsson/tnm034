@@ -8,3 +8,5 @@ function strout = tnm034(im)
 %
 % Your program code.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Zweite Aenderung
