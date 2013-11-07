@@ -15,5 +15,4 @@ temp = hist(im,imgSize(1))
 
 
 
-
 end
