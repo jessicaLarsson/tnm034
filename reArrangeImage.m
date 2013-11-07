@@ -7,7 +7,7 @@ originalImage
 %img = originalImage./256.0;
 
 
-img = rgb2gray(img);
+img = rgb2gray(originalImage);
 
 end
 
