@@ -2,9 +2,9 @@
 %jfgafhasf
 function img = reArrangeImage(fileName)
 
-originalImage = double(imread(fileName));
+originalImage = im2double(imread(fileName));
 originalImage
-img = originalImage./256.0;
+%img = originalImage./256.0;
 
 
 img = rgb2gray(img);
