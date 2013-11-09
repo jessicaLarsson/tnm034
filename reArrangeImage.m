@@ -3,7 +3,7 @@
 function img = reArrangeImage(fileName)
 
 originalImage = im2double(imread(fileName));
-originalImage
+originalImage;
 %img = originalImage./256.0;
 
 
