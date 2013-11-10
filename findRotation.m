@@ -23,9 +23,10 @@ down = prctile(staffDetection(imrotate(greyImage,-direction),choosenFilter),choo
 if up > down
     % direction is already correct
     current = up;
+    direction = -direction;
 else % down > up
     % go other direction 
-    direction = direction*(-1);
+    
     current = down;
 end
     
@@ -41,37 +42,40 @@ while(current > last)
     current
 end
 
-% identify two highest values
+% identify two highest values (a and b)
 % now we have to find the highest position between those two
 
-for i = 1:3
-    firstValue = last;
-    secondValue = 0;
-
+if beforeLast > current
+    a = beforeLast;
+    b = last;
     %restore best rotation until now
     currentRotation = currentRotation - direction;
 
-    if beforeLast > current
-        secondValue = beforeLast
-        direction = -direction;
-    else % current > beforeLast
-        secondValue = current;
-    end
-
-
-     while(current > last)
-         direction = direction/2.0; 
-        beforeLast = last;
-
-        last = current;
-        currentRotation = currentRotation + direction;
-        current = prctile(staffDetection(imrotate(greyImage, currentRotation),choosenFilter),choosenPrctile)/s(1);
-        current
-     end
-     
-     end
+else % current > beforeLast
+    a = last;
+    b = current;
+    %restore best rotation until now
+    currentRotation = currentRotation - 2*direction;
 end
+
+timesToHalf = 4;
+
+for i = 1:timesToHalf
+    direction = direction/2.0;
+    currentRotation = currentRotation + direction;
+    new = prctile(staffDetection(imrotate(greyImage, currentRotation),choosenFilter),choosenPrctile)/s(1);
+
+    if a < b
+        a = new;
+    else % b < a
+        b = new;
+        %reset rotation back to last position
+        currentRotation = currentRotation - direction;
+    end
     
+end
+current
+currentRotation
 close all;
 % half degree, until maximum is reached
 
