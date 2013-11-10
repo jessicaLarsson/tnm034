@@ -14,7 +14,7 @@ bestRot = 0;
 
 stepwidth = 1;
 
-bestValue
+% bestValue
 
 
 for i = -5:1:5 
@@ -22,9 +22,9 @@ for i = -5:1:5
     if new > bestValue
         bestValue = new;
         bestRot = i;
-        close all;
-        bestValue
-        bestRot
+%         close all;
+%         bestValue
+%         bestRot
     end
 end
 
@@ -91,23 +91,24 @@ while (abs(abs(a-b)/a) > 0.005)
         % save rotation for a and make a smaller step next time
         tmpRotation = tmpRotation - stepwidth;
     end
-    disp ('values')
-    a
-    b
+%     disp ('values')
+%     a
+%     b
 end
 
 disp('best')
 if a < b
-     b
+      b
      tmpRotation = tmpRotation + stepwidth;
 else % b < a
-     a
+      a
+
 end
 close all;
 
 disp('with rotation')
 tmpRotation
-staffDetection(imrotate(greyImage,tmpRotation),1);
+staffDetection(imrotate(greyImage,tmpRotation),1,1);
 
 
 % half degree, until maximum is reached

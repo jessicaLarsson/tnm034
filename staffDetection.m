@@ -1,7 +1,14 @@
-function [ summedRows ] = staffDetection( greyImage,type )
+function [ summedRows ] = staffDetection( greyImage, type , debug)
 %Take the grey image and calculate rows
 % type = 1: only vertical edge detection
 % type = 2: vertical and horizontal edge detection
+
+% Set default values if the argument wasn't passed in, or is empty, as in []
+    if (nargin < 3)  ||  isempty(debug)
+        debug = 0;
+    end
+    
+
 
 s = size(greyImage);
 
@@ -12,9 +19,10 @@ filteredImage = sobelOperator(greyImage,type == 1 || type == 2, type == 2);
 
 bin = makeBinary(filteredImage);
 
-
-figure('name','BinaryFilteredImage');
-imshow(bin);
+if debug
+    figure('name','BinaryFilteredImage');
+	imshow(bin);
+end
 
 
 
@@ -28,8 +36,10 @@ for i = 1:s(1)
     end
 end
 
-figure('name','plot of horizontal projection');
-plot(sum);
+if debug
+	figure('name','plot of horizontal projection');
+	plot(sum);
+end
 
 ylim([0 s(2)]);
 

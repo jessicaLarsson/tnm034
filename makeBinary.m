@@ -3,9 +3,9 @@ function [binaryImage ] = makeBinary(greyImage)
 %   Detailed explanation goes here
 
 % make a histogram
-greyImage;
-disp('printed greyIMage');
-vector = greyImage(:);
+%greyImage;
+
+%vector = greyImage(:);
 %figure('name','Histogram of greyValues');
 %hist(vector,100);
 
