@@ -12,6 +12,7 @@ originValue = prctile(data,choosenPrctile)/s(1);
 last = originValue;
 
 direction = 1; %Stepwidth to go
+stepwidth = 1;
 % try one degree in each direction
 up   = prctile(staffDetection(imrotate(greyImage, direction),choosenFilter),choosenPrctile)/s(1);
 down = prctile(staffDetection(imrotate(greyImage,-direction),choosenFilter),choosenPrctile)/s(1);
@@ -37,7 +38,7 @@ beforeLast = 0;
 while(current > last)
     beforeLast = last;
     last = current;
-    currentRotation = currentRotation + direction;
+    currentRotation = currentRotation + direction*stepwidth;
     current = prctile(staffDetection(imrotate(greyImage, currentRotation),choosenFilter),choosenPrctile)/s(1);
     current
 end
@@ -58,24 +59,36 @@ else % current > beforeLast
     currentRotation = currentRotation - 2*direction;
 end
 
-timesToHalf = 4;
+timesToHalf = 3;
 
 for i = 1:timesToHalf
     direction = direction/2.0;
-    currentRotation = currentRotation + direction;
-    new = prctile(staffDetection(imrotate(greyImage, currentRotation),choosenFilter),choosenPrctile)/s(1);
+    tmpRotation = currentRotation + direction;
+    new = prctile(staffDetection(imrotate(greyImage, tmpRotation),choosenFilter),choosenPrctile)/s(1);
 
     if a < b
         a = new;
+        currentRotation = currentRotation + direction;
     else % b < a
         b = new;
-        %reset rotation back to last position
-        currentRotation = currentRotation - direction;
     end
-    
+    disp ('values')
+    a
+    b
 end
-current
+
+disp('best')
+if a < b
+     b
+     currentRotation = currentRotation + direction;
+else % b < a
+     a
+end
+
+disp('with rotation')
 currentRotation
+staffDetection(imrotate(greyImage, currentRotation),1);
+
 close all;
 % half degree, until maximum is reached
 
