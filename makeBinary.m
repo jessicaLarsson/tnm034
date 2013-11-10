@@ -3,11 +3,15 @@ function [binaryImage ] = makeBinary(greyImage)
 %   Detailed explanation goes here
 
 % make a histogram
+greyImage;
+disp('printed greyIMage');
 vector = greyImage(:);
-hist(vector,100);
+%figure('name','Histogram of greyValues');
+%hist(vector,100);
 
 binaryImage = greyImage > 0.7;
-imshow(binaryImage);
+%figure('name','BinaryImageOutOfGreyValues');
+%imshow(binaryImage);
 
 end
 
