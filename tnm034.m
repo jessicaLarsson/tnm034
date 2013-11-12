@@ -9,8 +9,18 @@ function strout = tnm034(im)
 % Your program code.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-imgSize = size(im)
-temp = hist(im,imgSize(1))
+b = makeBinary(im);
+
+
+
+rotationDegree = findRotationHough(b,1);
+b_rot = imrotate(b, rotationDegree);
+close all;
+figure
+imshow(b)
+figure
+imshow(b_rot);
+
 
 
 

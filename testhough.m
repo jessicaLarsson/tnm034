@@ -1,21 +1,65 @@
-b = reArrangeImage('Images_Training/im3s.jpg');
+close all
+b = reArrangeImage('logo.jpg');
+%b = reArrangeImage('Images_Training/im8s.jpg');
 b = makeBinary(b);
-b = imcomplement(b);
-b = imrotate(b, -0.5);
 
-[H,theta,rho] = hough(b);
-%figure, imshow(imadjust(mat2gray(H)),[],'XData',theta,'YData',rho,'InitialMagnification','fit');
-%xlabel('\theta (degrees)'), ylabel('\rho');
-%axis on, axis normal, hold on;
+b = sobelOperator(b,1,1);
+%b = imcomplement(b);
+
+b = imrotate(b, 15.3);
+
+%first go over all degrees
+
+%[H,theta,rho] = hough(b);
+[H, theta, rho] = hough(b,'RhoResolution',0.5,'Theta',-90:0.5:89.5);
+figure, imshow(imadjust(mat2gray(H)),[],'XData',theta,'YData',rho,'InitialMagnification','fit');
+xlabel('\theta (degrees)'), ylabel('\rho');
+axis on, axis normal, hold on;
 %colormap(hot)
 
-P = houghpeaks(H,50,'threshold',ceil(0.25*max(H(:))));
+P = houghpeaks(H,1,'threshold',ceil(0.5*max(H(:))));
 
 x = theta(P(:,2));
 y = rho(P(:,1));
 plot(x,y,'s','color','black');
 
 lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',10);
+%??? instead of using one line use 3 or more lines to get rotation angle
+% then look the variance of them
+%small: ok
+% high: take more lines to get a more confidence value
+t = lines.theta
+
+%[H,theta,rho] = hough(b);
+thetaStart = t-2;
+thetaEnde =t+2;
+if thetaEnde >=90
+    thetaEnde=89.9;
+end
+
+if thetaStart < -90
+    thetaStart = -90;
+end
+
+[H, theta, rho] = hough(b,'RhoResolution',0.1,'Theta',thetaStart:0.1:thetaEnde);
+figure, imshow(imadjust(mat2gray(H)),[],'XData',theta,'YData',rho,'InitialMagnification','fit');
+xlabel('\theta (degrees)'), ylabel('\rho');
+axis on, axis normal, hold on;
+%colormap(hot)
+
+P = houghpeaks(H,25,'threshold',ceil(0.5*max(H(:))));
+
+x = theta(P(:,2));
+y = rho(P(:,1));
+plot(x,y,'s','color','black');
+
+lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',10);
+lines.theta
+
+degree = lines.theta 
+degree = degree - 90.0
+rotIm = imrotate(b,degree);
+staffDetection(rotIm,1,1);
 
 figure, imshow(b), hold on
 max_len = 0;

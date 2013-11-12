@@ -1,1 +1,40 @@
+# don't upload files with following properties in the github
+# this is the automatically filter
+
 *~
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Visual Studio
+*.vcxproj*
+*.sln
+*.suo
+*.sdf
+*ipch*
+*Release*
+*Debug*
+
+#LaTex
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex
+*.toc
+*.tps
+*.lof
+
+
