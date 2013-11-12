@@ -6,7 +6,7 @@ function [binaryImage ] = makeBinary(greyImage)
 vector = greyImage(:);
 hist(vector,100);
 
-binaryImage = greyImage > 0.7;
+binaryImage = greyImage > 0.8;
 imshow(binaryImage);
 
 end
