@@ -15,16 +15,15 @@ if debug
     axis on, axis normal, hold on;
 end
 
-numOfLines = 5
+numOfLinesToFind = 10;
+numOfLinesToUse = 5;
 
-
-%???  THRESHOLD kontrollieren -> im Moment haben wir 4 linien ... wollen 5
 numLinesFound = 0;
 factor = 0.5;
 lines = 0;
 
-while (numLinesFound < numOfLines)
-    P = houghpeaks(H,numOfLines+1,'threshold',ceil(factor*max(H(:))));
+while (numLinesFound < numOfLinesToFind)
+    P = houghpeaks(H,numOfLinesToFind,'threshold',ceil(factor*max(H(:))));
     factor = factor*0.8;
 
     if debug
@@ -38,14 +37,14 @@ while (numLinesFound < numOfLines)
     numLinesFound = length(lines);
 end
 
-numLinesFound
+numOfLinesToFind
 
-diffMatrix = zeros(numOfLines,1);
+diffMatrix = zeros(numOfLinesToFind,1);
 
-for i = 1:numOfLines
+for i = 1:numOfLinesToFind
     disp('Runde i: ')
         i
-    for j = 1:numOfLines
+    for j = 1:numOfLinesToFind
         disp('Runde j: ')
         j
         disp('lines i');
@@ -59,19 +58,28 @@ end
 
 
 [B,IX] = sort(diffMatrix);
-B;
-IX;
+B
+IX
 
 
 disp('Gemessene Verdrehung')
 degree = 0;
-linesTakeIntoAccount = 3;
-for i = 1:linesTakeIntoAccount
+for i = 1:numOfLinesToUse
     degree = degree+lines(IX(i)).theta;
+    disp('want to use: ')
     lines(IX(i)).theta
+    lines(IX(i)).theta;
 end
-degree = degree / linesTakeIntoAccount;
-degree;
+degree = degree / numOfLinesToUse;
+degree
+
+while degree > 90
+    degree = degree-180;
+end
+
+while degree < -90
+    degree = degree + 180;
+end
 
 if debug
     figure, imshow(b), hold on
