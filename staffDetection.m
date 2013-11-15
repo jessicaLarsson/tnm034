@@ -7,8 +7,6 @@ function [ summedRows ] = staffDetection( greyImage, type , debug)
     if (nargin < 3)  ||  isempty(debug)
         debug = 0;
     end
-    
-
 
 s = size(greyImage);
 
@@ -17,14 +15,16 @@ bin = zeros(s(1),s(2));
 
 filteredImage = sobelOperator(greyImage,type == 1 || type == 2, type == 2);
 
-bin = makeBinary(filteredImage);
+if debug
+    bin = makeBinary(filteredImage,1);
+else 
+    bin = makeBinary(filteredImage);
+end
 
 if debug
     figure('name','BinaryFilteredImage');
 	imshow(bin);
 end
-
-
 
 % count white pixels in binary image
 % ??? schneller machen

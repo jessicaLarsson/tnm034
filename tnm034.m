@@ -13,7 +13,9 @@ b = makeBinary(im);
 
 
 
-rotationDegree = findRotationHough(b,1);
+%rotationDegree = findRotationHough(b,1);
+%rotationDegree = findRotationHoughIterative(im,b,1);
+rotationDegree = findRotationIterative(im);
 b_rot = imrotate(b, rotationDegree);
 close all;
 figure

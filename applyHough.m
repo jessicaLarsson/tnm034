@@ -19,25 +19,33 @@ numOfLines = 5
 
 
 %???  THRESHOLD kontrollieren -> im Moment haben wir 4 linien ... wollen 5
-P = houghpeaks(H,numOfLines+1,'threshold',ceil(0.5*max(H(:))));
+numLinesFound = 0;
+factor = 0.5;
+lines = 0;
 
-if debug
-    x = theta(P(:,2));
-    y = rho(P(:,1));
-    plot(x,y,'s','color','black');
+while (numLinesFound < numOfLines)
+    P = houghpeaks(H,numOfLines+1,'threshold',ceil(factor*max(H(:))));
+    factor = factor*0.8;
+
+    if debug
+        x = theta(P(:,2));
+        y = rho(P(:,1));
+        plot(x,y,'s','color','black');
+    end
+
+    lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',1);
+
+    numLinesFound = length(lines);
 end
 
-lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',1);
-
-length(lines)
-
+numLinesFound
 
 diffMatrix = zeros(numOfLines,1);
 
-for i = 0:1:numOfLines
+for i = 1:numOfLines
     disp('Runde i: ')
         i
-    for j = 0:1:numOfLines
+    for j = 1:numOfLines
         disp('Runde j: ')
         j
         disp('lines i');
@@ -49,11 +57,10 @@ for i = 0:1:numOfLines
     end
 end
 
-diffMatrix
 
 [B,IX] = sort(diffMatrix);
-B
-IX
+B;
+IX;
 
 
 disp('Gemessene Verdrehung')
@@ -64,7 +71,7 @@ for i = 1:linesTakeIntoAccount
     lines(IX(i)).theta
 end
 degree = degree / linesTakeIntoAccount;
-degree
+degree;
 
 if debug
     figure, imshow(b), hold on

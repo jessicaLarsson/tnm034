@@ -2,6 +2,7 @@
 # this is the automatically filter
 
 *~
+*.asv
 
 # Compiled Object files
 *.slo

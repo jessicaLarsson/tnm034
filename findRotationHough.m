@@ -10,7 +10,6 @@ end
 b = sobelOperator(binaryImage,1,1);
 
 %test
-
 %b = imrotate(b, -15.3);
 
 %first go over all degrees
@@ -18,9 +17,13 @@ b = sobelOperator(binaryImage,1,1);
 stepSizeGlobalHough = 0.5;
 stepSizeLocalHough = 0.05;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% global step
+
 degree = applyHough(b,-90,89.9,stepSizeGlobalHough,1);
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% refinement step
 degree = degree +90;
 
 thetaStart = degree-3*stepSizeGlobalHough;
@@ -44,15 +47,12 @@ end
 
 degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough,1);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% adapt got optimal rotation
+
 degree = degree + 90;
-degree
+optimalRotation = degree;
 
-
-    optimalRotation = degree;
-
-
-
-optimalRotation
 
 end
 

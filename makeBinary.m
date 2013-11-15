@@ -1,13 +1,20 @@
-function [bw ] = makeBinary(greyImage)
+function [bw ] = makeBinary(greyImage,debug)
 %MAKEBINARY Summary of this function goes here
 %   Detailed explanation goes here
 
-% make a histogram
-%greyImage;
 
-vector = greyImage(:);
-figure('name','Histogram of greyValues');
-hist(vector,100);
+% Set default values if the argument wasn't passed in, or is empty, as in []
+    if (nargin < 2)  ||  isempty(debug)
+        debug = 0;
+    end
+%make histogram
+
+greyImage;
+if debug
+    vector = greyImage(:);
+    figure('name','Histogram of greyValues in makeBinary');
+    hist(vector,100);
+end
 
 level = graythresh(greyImage);
 %level

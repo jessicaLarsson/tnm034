@@ -1,35 +1,45 @@
-function [ tmpRotation ] = findRotationIterative( greyImage )
-%UNTITLED4 Summary of this function goes here
+function [  tmpRotation ] = findRotationHoughIterative(greyImage,binaryImage,debug )
+%UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-s = size(greyImage);
+% Set default values if the argument wasn't passed in, or is empty, as in []
+if (nargin < 3)  ||  isempty(debug)
+    debug = 0;
+end
+
+ 
+
+%edge detection
+b = sobelOperator(binaryImage,1,1);
+
+%test
+%b = imrotate(b, -15.3);
+
+%first go over all degrees
+
+stepSizeGlobalHough = 0.5;
+
+stepwidth = 1;
+s = size(binaryImage);
 choosenPrctile = 95;
 choosenFilter = 1;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%get rating of original Image
-data = staffDetection(greyImage,choosenFilter);
-bestValue = prctile(data,choosenPrctile)/s(1);
-bestRot = 0;
-%last = originValue;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% global step
 
-stepwidth = 1;
+degree = applyHough(b,-90,89.9,stepSizeGlobalHough,1);
 
-% bestValue
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% adapt got optimal rotation
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% get best rotation with big stepsize
-for i = -20:1:20 
-    new = prctile(staffDetection(imrotate(greyImage, i),choosenFilter),choosenPrctile)/s(1);
-    if new > bestValue
-        bestValue = new;
-        bestRot = i;
-%         close all;
-%         bestValue
-%         bestRot
-    end
-end
+degree = degree + 90;
+bestRot = degree;
+disp('global');
+bestRot
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hough finished, start iterative
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % refine rotatoin with small stepsize
@@ -50,9 +60,9 @@ while (abs(abs(a-b)/a) > 0.005)
         % save rotation for a and make a smaller step next time
         tmpRotation = tmpRotation - stepwidth;
     end
-%     disp ('values')
-%     a
-%     b
+     disp ('values')
+     a
+     b
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,13 +81,8 @@ disp('with rotation')
 tmpRotation
 data = staffDetection(imrotate(greyImage,tmpRotation),1,1);
 [pks, locs] = findpeaks(data);
-%pks
-%locs
-
-
-% half degree, until maximum is reached
-
-
+pks;
+locs;
 
 end
 
