@@ -7,7 +7,8 @@ if (nargin < 5)  ||  isempty(debug)
     debug = 0;
 end
 
-[H, theta, rho] = hough(b,'RhoResolution',stepsize,'Theta',start:stepsize:ende);
+rhoResolution = 1; %not smaller than pixel size!!!!
+[H, theta, rho] = hough(b,'RhoResolution',rhoResolution,'Theta',start:stepsize:ende);
 
 if debug
     figure, imshow(imadjust(mat2gray(H)),[],'XData',theta,'YData',rho,'InitialMagnification','fit');
@@ -37,49 +38,41 @@ while (numLinesFound < numOfLinesToFind)
     numLinesFound = length(lines);
 end
 
-numOfLinesToFind
-
 diffMatrix = zeros(numOfLinesToFind,1);
 
 for i = 1:numOfLinesToFind
-    disp('Runde i: ')
-        i
+    %disp('Runde i: ')
+    %    i
     for j = 1:numOfLinesToFind
-        disp('Runde j: ')
-        j
-        disp('lines i');
-        lines(i).theta
-        disp('lines j');
-        lines(j).theta
+        %disp('Runde j: ')
+        %j
+        %disp('lines i');
+        %lines(i).theta
+        %disp('lines j');
+        %lines(j).theta
         
-        diffMatrix(i) = diffMatrix(i) + dist(lines(i).theta,lines(j).theta)
+        diffMatrix(i) = diffMatrix(i) + dist(lines(i).theta,lines(j).theta);
     end
 end
 
 
 [B,IX] = sort(diffMatrix);
-B
-IX
+B;
+IX;
 
 
-disp('Gemessene Verdrehung')
+%disp('Gemessene Verdrehung')
 degree = 0;
+numbOfLinesUnequalZero = 0.0;
 for i = 1:numOfLinesToUse
-    degree = degree+lines(IX(i)).theta;
-    disp('want to use: ')
-    lines(IX(i)).theta
-    lines(IX(i)).theta;
+    %disp('want to use: ')
+    %lines(IX(i)).theta
+    if abs(lines(IX(i)).theta) > 0.001
+        numbOfLinesUnequalZero = numbOfLinesUnequalZero+1.0;
+        degree = degree+lines(IX(i)).theta;
+    end
 end
-degree = degree / numOfLinesToUse;
-degree
-
-while degree > 90
-    degree = degree-180;
-end
-
-while degree < -90
-    degree = degree + 180;
-end
+degree = degree / numbOfLinesUnequalZero;
 
 if debug
     figure, imshow(b), hold on
@@ -104,5 +97,12 @@ if debug
     plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','blue');
 end
 
+if debug
+    disp('degree in apply Hough')
+    degree
+    disp('applyHoughReady');
 end
+
+end
+
 

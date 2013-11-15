@@ -32,8 +32,8 @@ degree = applyHough(b,-90,89.9,stepSizeGlobalHough,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adapt got optimal rotation
 
-degree = degree + 90;
-bestRot = degree;
+%degree = degree + 90;
+bestRot = -(90-abs(degree));
 disp('global');
 bestRot
 

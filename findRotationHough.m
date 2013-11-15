@@ -20,38 +20,46 @@ stepSizeLocalHough = 0.05;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % global step
 
-degree = applyHough(b,-90,89.9,stepSizeGlobalHough,1);
+degree = applyHough(b,-90,89.9,stepSizeGlobalHough);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % refinement step
-degree = degree +90;
 
-thetaStart = degree-3*stepSizeGlobalHough;
-thetaEnde  = degree+3*stepSizeGlobalHough;
+thetaStart = degree-2*stepSizeGlobalHough;
+thetaEnde  = degree+2*stepSizeGlobalHough;
 
-if thetaEnde >=180
-    thetaEnde=179.99;
+if thetaEnde >=90
+    thetaEnde=89.999;
 end
 
-if thetaStart < 0
-    thetaStart = 0;
+if thetaStart < -90
+    thetaStart = -90;
 end
-
-thetaStart = thetaStart -90;
-thetaEnde  = thetaEnde  -90;
 
 if(debug)
     thetaStart
     thetaEnde
 end
 
-degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough,1);
+degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adapt got optimal rotation
 
-degree = degree + 90;
+%degree = -(90-abs(degree)); + pipi - 3
+
+% offset of matlab rot and hough
+degree = degree -90.0;
+
+if(degree < -90.0)
+    degree = degree +180.0;
+end
+
+if(degree > 90.0)
+    degree = degree -180.0;
+end
 optimalRotation = degree;
+optimalRotation
 
 
 end
