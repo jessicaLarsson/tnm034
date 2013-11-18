@@ -22,6 +22,7 @@ b_rot = imrotate(b, rotationDegree);
 %imshow(b)
 %figure
 %imshow(b_rot);
+%staffDetection(imrotate(im,rotationDegree),2,1);
 
 
 
