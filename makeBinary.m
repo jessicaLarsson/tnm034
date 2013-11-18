@@ -19,8 +19,9 @@ end
 level = graythresh(greyImage);
 %level
 bw = im2bw(greyImage, level);
-%imshow(bw);
 
+
+%imshow(bw);
 %bw = greyImage > 0.7;
 %figure('name','BinaryImageOutOfGreyValues');
 %imshow(bw);
