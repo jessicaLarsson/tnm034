@@ -1,5 +1,3 @@
-
-%jfgafhasf
 function img = reArrangeImage(fileName)
 
 originalImage = im2double(imread(fileName));

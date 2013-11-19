@@ -10,9 +10,6 @@ function [ summedRows ] = staffDetection( greyImage, type , debug)
 
 s = size(greyImage);
 
-
-bin = zeros(s(1),s(2));
-
 filteredImage = sobelOperator(greyImage,type == 1 || type == 2, type == 2);
 
 if debug
