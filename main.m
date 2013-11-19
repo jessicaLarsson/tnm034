@@ -1,8 +1,5 @@
-%b = reArrangeImage('Images_Training/im14s.jpg'); %
-
 %b = reArrangeImage('Images_Training/im9c.jpg'); %worst
 %b = reArrangeImage('Images_Training/im13c.jpg'); %worst
-%b = reArrangeImage('Images_Training/im10s.jpg'); %worst
 
 %close all;
 
@@ -46,7 +43,11 @@
 
 %########## Allemande
 % - has 2,4,8,16
-file = 'Images_Training/im13s.jpg';
+%file = 'Images_Training/im13s.jpg';
+
+%########## own composition
+% - has 4,8,16, 32
+file = 'Images_Training/im14s.jpg';
 
 img = reArrangeImage(file);
 tnm034(img);
