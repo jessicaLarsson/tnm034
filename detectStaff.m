@@ -72,10 +72,6 @@ peaks = im2bw(pksOfHorizProjection, level);
 locationOfPeaks = locsH.*peaks;
 locationOfPeaks(locationOfPeaks==0) = [];
 
-locationOfPeaks
-%s = std(img2gray(double(locationOfPeaks)),2) 
-
-
     if(debug)
         % draw peaks
         figure('name','peaksOnImage'), imshow(diff);
@@ -210,6 +206,8 @@ end
                     color = 'c';
                 case 7 %orange
                     color = [1.0, 0.5, 0.0];
+                case 8 %white
+                    color = [1.0, 1.0, 1.0];
                 otherwise
                     color = [0.5, 0.5, 0.5];
             end

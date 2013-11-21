@@ -111,15 +111,23 @@ staffSpace
 % faehnchen2 = imdilate(bin_rot_comp,se2);
 % figure('name','faehnchen'), imshow(faehnchen1+faehnchen2)
 
+removedStaffDiskOpened = bin_rot_comp;
+% fill small holes
+% se = [0 1 0 ; 1 1 1; 0 1 0];
+% removedStaffDiskOpened = imdilate(bin_rot_comp,se);
+% figure('name','erstmal dilatieren'), imshow(removedStaffDiskOpened)
+
+
 % open with a disk to mark noteheads
 se = strel('disk',ceil(staffSpace/2.0+0.5));  
-removedStaffDiskOpened = imopen(bin_rot_comp,se);
+removedStaffDiskOpened = imopen(removedStaffDiskOpened,se);
 figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 
 % erode to focus points
 se = [1 1 1; 1 1 1; 1 1 1];
 noteHeadFocused = imerode(removedStaffDiskOpened, se);
 figure('name','nach Fokusierung'), imshow(noteHeadFocused);
+figure('name','originalImage'), imshow(img_rot);
 hold on;
 
 % % /1.5 works best for own picture 14
@@ -136,7 +144,7 @@ for i = 1:length(stats)
     
     x = stats(i).Centroid(1);
     y = stats(i).Centroid(2);
-    plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
+    plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
 end
 
 disp('ready');
