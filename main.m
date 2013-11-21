@@ -33,13 +33,13 @@ file = 'Images_Training/im3s.jpg';
 %########## Titanic
 % - has 1,2,4,8
 % - with Synkopes
-file = 'Images_Training/im6s.jpg';
+%file = 'Images_Training/im6s.jpg';
 
 %########## Naer det lider mot jul
 % - has 2,4,8
 % - with Synkopes
 % - very long
-%file = 'Images_Training/im10s.jpg';
+file = 'Images_Training/im10s.jpg';
 
 %########## Allemande
 % - has 2,4,8,16

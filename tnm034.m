@@ -31,8 +31,6 @@ close all;
     %%%%%% 
     summe = sum(bin_rot_comp,2);
     figure('name','plot of horizontal projection'),plot(summe);
-    summe = sum(bin_rot_comp,1);
-    figure('name','plot of vertical projection'),plot(summe);
     %%%%%%
 
 
@@ -54,8 +52,7 @@ close all;
 % cut image with staff information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-dimensionsOfImage = size(bin_rot);
-
+% cut up and down 
 verticalOffset = (5*staffSpace+4*staffHeight);
 up   = startStaffSystem(1) - verticalOffset;
 down = endStaffSystem(end) + verticalOffset;
@@ -64,16 +61,34 @@ if up < 0
     up = 0;
 end
 
-if down > dimensionsOfImage(1)
-    down = dimensionsOfImage(1);
+if down > s(1)
+    down = s(1);
 end
 
-bin_rot = bin_rot(up:down,:);
-img_rot = img_rot(up:down,:);
-bin_rot_comp = bin_rot_comp(up:down,:);
+% cut left and right
 
-figure('name','cuttedImage'), imshow(bin_rot);
+%figure('name','plot of vertical projection'),plot(summeVerti);
+%figure('name','plot of summeVertiFiltered'),plot(summeVertiFiltered);
 
+%lowpassfilter
+summeVerti = sum(bin_rot_comp,1);
+fil = [1 2 3 2 1];
+summeVertiFiltered = filter(fil,1,summeVerti);
+
+%identify "Notenschlüssel"-Pik and get first minima after that
+[vertPiks, vertLocs] = findpeaks(summeVertiFiltered);
+[maxWert, index] = max(vertPiks);
+while  vertPiks(index) >= vertPiks(index+1)
+    index = index +1;
+end
+    
+left = vertLocs(index);
+right = s(2);
+
+bin_rot = bin_rot(up:down,left:right);
+img_rot = img_rot(up:down,left:right);
+bin_rot_comp = bin_rot_comp(up:down,left:right);
+s = size(bin_rot);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
@@ -84,7 +99,8 @@ figure('name','cuttedImage'), imshow(bin_rot);
 %se = strel('line',3,90);
 se = [1 1 1; 1 1 1; 1 1 1];
 removedStaff = imerode(bin_rot_comp,se);
-figure('name','originalImage'), imshow(bin_rot_comp);
+figure('name','originalImage'), imshow(img_rot);
+figure('name','originalImage binary'), imshow(bin_rot_comp);
 figure('name','erodedImage - without staff'), imshow(removedStaff);
 
 staffSpace
