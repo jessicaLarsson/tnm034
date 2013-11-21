@@ -48,9 +48,12 @@ summeHorizFiltered = filter(fil,1,summeHoriz);
 
 [pksHf,locsHf] = findpeaks(summeHorizFiltered);
 
+
 % set filtered as horizontal
 pksH = pksHf;
 locsH = locsHf;
+
+%remove values, which are to close together
 
 
 % normalize between 0 and 1
@@ -68,6 +71,10 @@ level = graythresh(pksOfHorizProjection);
 peaks = im2bw(pksOfHorizProjection, level);
 locationOfPeaks = locsH.*peaks;
 locationOfPeaks(locationOfPeaks==0) = [];
+
+locationOfPeaks
+%s = std(img2gray(double(locationOfPeaks)),2) 
+
 
     if(debug)
         % draw peaks
@@ -129,6 +136,8 @@ seedPoints = seedStart:seedPointsDistance:seedEnd;
                     color = 'c';
                 case 7 %orange
                     color = [1.0, 0.5, 0.0];
+                case 8 %white
+                    color = [1.0, 1.0, 1.0];
                 otherwise
                     color = [0.5, 0.5, 0.5];
             end
@@ -237,6 +246,27 @@ staffHeight = (summedStaffDistance-staffSpace*4*numOfClusters)/(5*numOfClusters)
     if (debug)
         staffSpace
         staffHeight
+    end
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% draw staff system
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    if (debug) 
+        figure('name','staffSystem'), imshow(diff);
+        hold on;
+        
+        color = 'r';
+        for i= 1:length(startStaffSystem)
+           height = startStaffSystem(i);
+           plot([1,s(2)],[height,height],'Color',color,'LineWidth',2);
+        end
+        
+        color = 'b';
+        for i= 1:length(endStaffSystem)
+           height = endStaffSystem(i);
+           plot([1,s(2)],[height,height],'Color',color,'LineWidth',2);
+        end
     end
 
 end

@@ -57,8 +57,16 @@ close all;
 dimensionsOfImage = size(bin_rot);
 
 verticalOffset = (5*staffSpace+4*staffHeight);
-up = max(startStaffSystem(1) - verticalOffset,1);
-down = min(endStaffSystem(end) + verticalOffset, dimensionsOfImage(2));
+up   = startStaffSystem(1) - verticalOffset;
+down = endStaffSystem(end) + verticalOffset;
+
+if up < 0
+    up = 0;
+end
+
+if down > dimensionsOfImage(1)
+    down = dimensionsOfImage(1);
+end
 
 bin_rot = bin_rot(up:down,:);
 img_rot = img_rot(up:down,:);
@@ -98,8 +106,15 @@ noteHeadFocused = imerode(removedStaffDiskOpened, se);
 figure('name','nach Fokusierung'), imshow(noteHeadFocused);
 hold on;
 
-L = bwlabel(noteHeadFocused)
-stats = regionprops(L,noteHeadFocused,'Centroid')
+% % /1.5 works best for own picture 14
+% se = strel('disk',ceil(staffSpace/2.0+0.5));  
+% noteHeadFocused = imopen(noteHeadFocused,se);
+% figure('name','nach Fokusierung Und Öffnen'), imshow(noteHeadFocused);
+% hold on;
+
+
+L = bwlabel(noteHeadFocused);
+stats = regionprops(L,noteHeadFocused,'Centroid');
 
 for i = 1:length(stats)
     
