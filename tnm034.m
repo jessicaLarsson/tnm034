@@ -18,9 +18,11 @@ bin = makeBinary(img);
 rotationDegree = findRotationHough(bin);
 %rotationDegree = findRotationHoughIterative(im,b,1);
 %rotationDegree = findRotationIterative(im);
-bin_rot = imrotate(bin, rotationDegree);
+
+bin_rot_comp = imrotate(imcomplement(bin), rotationDegree);
+bin_rot = imcomplement(bin_rot_comp);
 img_rot = imrotate(img, rotationDegree);
-bin_rot_comp = imcomplement(bin_rot);
+
 s = size(bin_rot);
 
 close all;
@@ -69,33 +71,78 @@ figure('name','cuttedImage'), imshow(bin_rot);
 % detect note heads
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %se = strel('disk', 3);
-% remove staff
 
-se = strel('line',3,90);
+% remove staff out of image
+%se = strel('line',3,90);
 se = [1 1 1; 1 1 1; 1 1 1];
-erodedBW = imerode(bin_rot_comp,se);
+removedStaff = imerode(bin_rot_comp,se);
 figure('name','originalImage'), imshow(bin_rot_comp);
-figure('name','erodedImage'), imshow(erodedBW)
+figure('name','erodedImage - without staff'), imshow(removedStaff);
 
-se = strel('disk', 2);
-erodedBW2 = imopen(bin_rot_comp,se);
-figure, imshow(erodedBW2)
+staffSpace
 
-diff = erodedBW - erodedBW2;
-figure, imshow(diff);
+% se1 = [ 0 1 1; 0 1 1 ; 1 1 0];
+% se2 = [ 1 1 0; 0 1 1 ; 0 1 1];
+% faehnchen1 = imdilate(bin_rot_comp,se1);
+% faehnchen2 = imdilate(bin_rot_comp,se2);
+% figure('name','faehnchen'), imshow(faehnchen1+faehnchen2)
 
-temp = rgb2gray(im2double(imread('templates/Note4_14paint.bmp')));
-cc = normxcorr2(temp,imcomplement(erodedBW));
-cc = mat2gray(cc);
-figure, imshow(cc);
+% open with a disk to mark noteheads
+se = strel('disk',ceil(staffSpace/2.0+0.5));  
+removedStaffDiskOpened = imopen(bin_rot_comp,se);
+figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 
-vector = cc(:);
-    figure('name','Histogram of greyValues in makeBinary');
-    hist(vector,100);
+% erode to focus points
+se = [1 1 1; 1 1 1; 1 1 1];
+noteHeadFocused = imerode(removedStaffDiskOpened, se);
+figure('name','nach Fokusierung'), imshow(noteHeadFocused);
+hold on;
 
-bw = im2bw(cc, 0.8);
-se = [ 0 1 0; 1 1 1 ; 0 1 0];
-bw = imerode(bw,se);
-figure, imshow(bw);
+L = bwlabel(noteHeadFocused)
+stats = regionprops(L,noteHeadFocused,'Centroid')
+
+for i = 1:length(stats)
+    
+    x = stats(i).Centroid(1);
+    y = stats(i).Centroid(2);
+    plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
+end
+
+disp('ready');
+
+% 
+% % show diff to see, that every note was detected
+% diff = removedStaffDiskOpened - removedStaff;
+% figure('name','diffImage'), imshow(diff);
+% 
+% se = strel('line',3*staffSpace,90);
+% %se = [1 1 1; 1 1 1; 1 1 1];
+% removedVertLine = imopen(bin_rot_comp,se);
+% figure('name','originalImage'), imshow(bin_rot_comp);
+% figure('name','erodedImage - without staff'), imshow(removedVertLine);
+% 
+% 
+% % show diff to see, that every note was detected
+% diff = removedStaffDiskOpened + removedVertLine;
+% figure('name','diffImageVert'), imshow(diff);
+% 
+% %choose correct height for head
+% temp = rgb2gray(im2double(imread('templates/NotenkopfVoll.bmp')));
+% temp = imresize(temp, [(staffSpace*1.3) NaN]);
+% 
+% figure('name','temp'),imshow(temp);
+% 
+% cc = normxcorr2(imcomplement(temp),erodedBW);
+% cc = mat2gray(cc);
+% figure('name','templateMatchin'), imshow(cc);
+% 
+% vector = cc(:);
+%     figure('name','Histogram of greyValues in makeBinary');
+%     hist(vector,100);
+% 
+% bw = im2bw(cc, 0.6);
+% se = [ 0 1 0; 1 1 1 ; 0 1 0];
+% bw = imerode(bw,se);
+% figure, imshow(bw);
 
 end

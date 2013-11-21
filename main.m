@@ -14,7 +14,7 @@
 
 %########## Julpolska
 % - 4,8
-file = 'Images_Training/im3s.jpg';
+%file = 'Images_Training/im3s.jpg';
 
 %########## Allegro
 % - 4,8 
@@ -47,7 +47,7 @@ file = 'Images_Training/im3s.jpg';
 
 %########## own composition
 % - has 4,8,16, 32
-%file = 'Images_Training/im14s.jpg';
+file = 'Images_Training/im14s.jpg';
 
 img = reArrangeImage(file);
 tnm034(img);
