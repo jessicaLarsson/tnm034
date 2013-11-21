@@ -23,24 +23,50 @@ diff = im2bw(diff);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% sum values of each row of diff, to get horizontal
+% sum values of each row of diff, to get horizontal & vertical
 %  projection and find peaks inside
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-summe = sum(diff,2);
-[pks,locs] = findpeaks(summe);
+summeHoriz = sum(diff,2);
+[pksH,locsH] = findpeaks(summeHoriz);
+summeVerti = sum(diff,1);
+[pksV,locsV] = findpeaks(summeVerti);
+
+
+    if (debug)
+        figure('name','plot of horizontal projection'),plot(summeHoriz);
+        ylim([0 s(2)]);
+    end
+% filter horizontal projection "lowPassFilter"
+fil = [1 2 3 2 1];
+fil = fil./sum(fil(:));
+summeHorizFiltered = filter(fil,1,summeHoriz);
+
+    if (debug)
+        figure('name','plot of horizontal projection filtered'),plot(summeHorizFiltered);
+        ylim([0 s(2)]);
+    end
+
+[pksHf,locsHf] = findpeaks(summeHorizFiltered);
+
+% set filtered as horizontal
+pksH = pksHf;
+locsH = locsHf;
+
+
 % normalize between 0 and 1
-pksOfHorizProjection = mat2gray(pks);
+pksOfHorizProjection = mat2gray(pksH);
+pksOfVertiProjection = mat2gray(pksV);
     if (debug)
         vector = pksOfHorizProjection(:);
-        figure('name','PeakHistogram'), hist(vector,20);
+        figure('name','PeakHistogramHoriz'), hist(vector,20);
     end
 % get level between staff and notes etc.
-%level = graythresh(pksOfHorizProjection);
+level = graythresh(pksOfHorizProjection);
 % alternative level calculation
-level = 0.4;
+%level = 0.4;
 % binarize peaks with level
 peaks = im2bw(pksOfHorizProjection, level);
-locationOfPeaks = locs.*peaks;
+locationOfPeaks = locsH.*peaks;
 locationOfPeaks(locationOfPeaks==0) = [];
 
     if(debug)

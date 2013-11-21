@@ -21,6 +21,7 @@ rotationDegree = findRotationHough(bin);
 bin_rot = imrotate(bin, rotationDegree);
 img_rot = imrotate(img, rotationDegree);
 bin_rot_comp = imcomplement(bin_rot);
+s = size(bin_rot);
 
 close all;
 
@@ -28,6 +29,8 @@ close all;
     %%%%%% 
     summe = sum(bin_rot_comp,2);
     figure('name','plot of horizontal projection'),plot(summe);
+    summe = sum(bin_rot_comp,1);
+    figure('name','plot of vertical projection'),plot(summe);
     %%%%%%
 
 
@@ -40,65 +43,59 @@ close all;
 %staffDetection(imrotate(img,rotationDegree),2,1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%weichzeichner
+% detect the staff - get information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% fk = [1 1 1 1 1; 1 1 1 1 1; 1 1 1 1 1; 1 1 1 1 1; 1 1 1 1 1 ];
-% fk = fk./ sum(fk(:));
-% fk
-% w = conv2(fk,img_rot);
-% figure
-% imshow(w);
-% r = makeBinary(w,1);
-% figure
-% imshow(r);
+[ clusters,startStaffSystem, endStaffSystem,staffHeight,staffSpace ] = detectStaff(bin_rot_comp);
 
-[ clusters,startStaffSystem, endStaffSystem,staffHeight,staffSpace ] = detectStaff(bin_rot_comp,1);
 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % cut image with staff information
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% dimensionsOfImage = size(bin_rot);
-% 
-% verticalOffset = (5*staffSpace+4*staffHeight);
-% up = max(startStaffSystem(1) - verticalOffset,1);
-% down = min(endStaffSystem(end) + verticalOffset, dimensionsOfImage(2)); ;
-% 
-% bin_rot = bin_rot(up:down,:);
-% img_rot = img_rot(up:down,:);
-% bin_rot_comp = bin_rot_comp(up:down,:);
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % detect note heads
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %se = strel('disk', 3);
-% % remove staff
-% se = strel('line',3,90);
-% se = [1 1 1; 1 1 1; 1 1 1];
-% erodedBW = imerode(bin_rot_comp,se);
-% figure, imshow(bin_rot_comp), figure, imshow(erodedBW)
-% 
-% se = strel('disk', 2);
-% erodedBW2 = imopen(bin_rot_comp,se);
-% figure, imshow(erodedBW2)
-% 
-% diff = erodedBW - erodedBW2;
-% figure, imshow(diff);
-% 
-% temp = rgb2gray(im2double(imread('templates/Note4_14paint.bmp')));
-% cc = normxcorr2(temp,imcomplement(erodedBW));
-% cc = mat2gray(cc);
-% figure, imshow(cc);
-% 
-% vector = cc(:);
-%     figure('name','Histogram of greyValues in makeBinary');
-%     hist(vector,100);
-% 
-% bw = im2bw(cc, 0.8);
-% se = [ 0 1 0; 1 1 1 ; 0 1 0];
-% bw = imerode(bw,se);
-% figure, imshow(bw);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% cut image with staff information
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+dimensionsOfImage = size(bin_rot);
+
+verticalOffset = (5*staffSpace+4*staffHeight);
+up = max(startStaffSystem(1) - verticalOffset,1);
+down = min(endStaffSystem(end) + verticalOffset, dimensionsOfImage(2));
+
+bin_rot = bin_rot(up:down,:);
+img_rot = img_rot(up:down,:);
+bin_rot_comp = bin_rot_comp(up:down,:);
+
+figure('name','cuttedImage'), imshow(bin_rot);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% detect note heads
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%se = strel('disk', 3);
+% remove staff
+
+se = strel('line',3,90);
+se = [1 1 1; 1 1 1; 1 1 1];
+erodedBW = imerode(bin_rot_comp,se);
+figure('name','originalImage'), imshow(bin_rot_comp);
+figure('name','erodedImage'), imshow(erodedBW)
+
+se = strel('disk', 2);
+erodedBW2 = imopen(bin_rot_comp,se);
+figure, imshow(erodedBW2)
+
+diff = erodedBW - erodedBW2;
+figure, imshow(diff);
+
+temp = rgb2gray(im2double(imread('templates/Note4_14paint.bmp')));
+cc = normxcorr2(temp,imcomplement(erodedBW));
+cc = mat2gray(cc);
+figure, imshow(cc);
+
+vector = cc(:);
+    figure('name','Histogram of greyValues in makeBinary');
+    hist(vector,100);
+
+bw = im2bw(cc, 0.8);
+se = [ 0 1 0; 1 1 1 ; 0 1 0];
+bw = imerode(bw,se);
+figure, imshow(bw);
 
 end

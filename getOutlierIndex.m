@@ -9,7 +9,7 @@ for i = 1:length(data)
 end
 
 [v,i] = max(summedValues);
-index = i
+index = i;
 
 end
 
