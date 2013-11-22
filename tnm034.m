@@ -95,15 +95,34 @@ s = size(bin_rot);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %se = strel('disk', 3);
 
+
 % remove staff out of image
-%se = strel('line',3,90);
-se = [1 1 1; 1 1 1; 1 1 1];
-removedStaff = imerode(bin_rot_comp,se);
+se = strel('line',3,90);
+%se = [1 1 1; 1 1 1; 1 1 1];
+removedStaff = imopen(bin_rot_comp,se);
+%removedStaff = imerode(removedStaff,se);
 figure('name','originalImage'), imshow(img_rot);
 figure('name','originalImage binary'), imshow(bin_rot_comp);
 figure('name','erodedImage - without staff'), imshow(removedStaff);
+hold on;
 
-staffSpace
+boundaries = bwboundaries(removedStaff);
+
+numberOfBoundaries = size(boundaries);
+
+% for k = 1 : numberOfBoundaries
+% 
+%     thisBoundary = boundaries{k};
+%     x = max(thisBoundary(:,2))-min(thisBoundary(:,2));
+%     y = max(thisBoundary(:,1))-min(thisBoundary(:,1));
+% 
+%     if x > staffSpace && y > 2*staffSpace
+%         plot(thisBoundary(:,2), thisBoundary(:,1), 'g', 'LineWidth', 2);
+%     end
+% end
+
+disp('ready');
+%staffSpace
 
 % se1 = [ 0 1 1; 0 1 1 ; 1 1 0];
 % se2 = [ 1 1 0; 0 1 1 ; 0 1 1];
@@ -140,11 +159,58 @@ hold on;
 L = bwlabel(noteHeadFocused);
 stats = regionprops(L,noteHeadFocused,'Centroid');
 
+% for i = 1:length(stats)
+%     
+%     x = stats(i).Centroid(1);
+%     y = stats(i).Centroid(2);
+%     %plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
+% end
+
+
+i = 1;
+
+% extract elements, which are big enough
+for k = 1 : numberOfBoundaries 
+
+    thisBoundary = boundaries{k};
+    dim2 = thisBoundary(:,1);
+    dim1 = thisBoundary(:,2);
+    height  = max(dim1) - min(dim1);
+    width   = max(dim2) - min(dim2);
+
+    if width >= staffSpace && height >= staffSpace
+        boxes(i).dim2 = thisBoundary(:,1);
+        boxes(i).dim1 = thisBoundary(:,2);
+        boxes(i).min1 = min(boxes(i).dim1);
+        boxes(i).min2 = min(boxes(i).dim2);
+        boxes(i).max1 = max(boxes(i).dim1);
+        boxes(i).max2 = max(boxes(i).dim2);
+        
+        i = i+1;
+    end
+end
+
+sizeBoxes = size(boxes);
+
+% draw the elements
 for i = 1:length(stats)
     
-    x = stats(i).Centroid(1);
-    y = stats(i).Centroid(2);
-    plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
+    dim1 = stats(i).Centroid(1);
+    dim2 = stats(i).Centroid(2);
+    
+    % calculate boundaries
+    unfinished = 1;
+    k = sizeBoxes(2);
+    while k > 0 && unfinished
+
+        if (boxes(k).min1 <= dim1) &&(boxes(k).max1 >= dim1) && (boxes(k).min2 <= dim2) && (boxes(k).max2 >= dim2)
+            % found the green box, containing this red dot    
+            plot(dim1,dim2,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
+            plot(boxes(k).dim1, boxes(k).dim2, 'b', 'LineWidth', 2);
+            unfinished = 0;
+        end
+        k = k-1;
+    end
 end
 
 disp('ready');
