@@ -98,6 +98,10 @@ img_rot = img_rot(up:down,left:right);
 bin_rot_comp = bin_rot_comp(up:down,left:right);
 s = size(bin_rot);
 
+%recalculate start and end staff system
+startStaffSystem = startStaffSystem - up;
+endStaffSystem = endStaffSystem -up;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,8 +110,9 @@ s = size(bin_rot);
 
 % remove staff out of image
 se = strel('line',3,90);
-%se = [1 1 1; 1 1 1; 1 1 1];
+se2 = [1 1 1; 1 1 1; 1 1 1];
 removedStaff = imopen(bin_rot_comp,se);
+removedStaff = imopen(removedStaff,se);
 %removedStaff = imerode(removedStaff,se);
 figure('name','originalImage'), imshow(img_rot);
 figure('name','originalImage binary'), imshow(bin_rot_comp);
@@ -199,6 +204,7 @@ sizeBoxes = size(boxes);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 L = bwlabel(noteHeadFocused);
 stats = regionprops(L,noteHeadFocused,'Centroid');
+stats = sortNotes(stats,startStaffSystem,endStaffSystem);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -208,10 +214,15 @@ figure('name','originalImage'), imshow(img_rot);
 hold on;
 
 % draw the note heads
-for i = 1:length(stats)
-    noteY = stats(i).Centroid(2);
-    noteX = stats(i).Centroid(1);
-    plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
+
+for staff = 1:length(startStaffSystem)
+    % for all red note heads
+    for i = 1:length(stats(staff).data)
+        
+        noteX = stats(staff).data(i,1);
+        noteY = stats(staff).data(i,2);
+        plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
+    end
 end
 
 %draw blue lines
@@ -227,120 +238,161 @@ end
 figure('name','originalImage'), imshow(img_rot);
 hold on;
 
-numOfValues = length(stats)
+numberOfStaffSystems = length(startStaffSystem);
+
+numOfValues = length(stats(staff).data);
+
+
+debug = 1
+%1 eingefärbte noten
+%2 histogramme
+    
+    
+
+if debug == 1
+    numOfValues = length(stats(staff).data);
+    noteStart = 1;
+    staffStart = 1;
+    staffEnd = numberOfStaffSystems;
+end
 vertis = repmat( struct('data',[]),1,numOfValues);
+if debug == 2
+    noteStart = 9;
+    numberOfNotes = noteStart+4;
+    staffStart = 3;
+    staffEnd = 3;
+end
+    
 
-% for all red note heads
-for i = 1:numOfValues
+for staff = staffStart:staffEnd
+    % for all red note heads
+    if debug == 1
+        numberOfNotes=length(stats(staff).data);
+    end
     
-    noteY = stats(i).Centroid(2);
-    noteX = stats(i).Centroid(1);
-    
-    % calculate boundaries
-    unfinished = 1;
-    k = sizeBoxes(2);
-    % go through all boxes
-    while k > 0 && unfinished
+    for i = noteStart:numberOfNotes
         
-        % if red dot is in aabb
-        %boxes(k).dim1
-        if (boxes(k).minX <= noteX) &&(boxes(k).maxX >= noteX) && (boxes(k).minY <= noteY) && (boxes(k).maxY >= noteY)
-
-            % make projection
-            left =  noteX - staffSpace;
-            right = noteX + staffSpace;
+        noteX = stats(staff).data(i,1);
+        noteY = stats(staff).data(i,2);
+        
+        % calculate boundaries
+        unfinished = 1;
+        k = sizeBoxes(2);
+        % go through all boxes
+        while k > 0 && unfinished
             
-            currBox = [];
-            currBox = [0 0];
-            aabb = [];
-            aabb = [aabb; left boxes(k).maxY];
-            aabb = [aabb; left boxes(k).minY];
-            aabb = [aabb; right boxes(k).minY];
-            aabb = [aabb; right boxes(k).maxY];
-            aabb = [aabb; left boxes(k).maxY];
-            
-            %plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
-            
-            
-            left = floor(left);
-            right = ceil(right);
-            
-            if left < 1
-                left = 1;
-            end
-            
-            if right > s(2)
-                right = s(2);
-            end
-            
-            pixelCut = round(noteY);
-            
-            upperHalf =  removedStaff(boxes(k).minY:pixelCut-1    ,left:right);
-            upperHalf = flipdim(upperHalf,1);
-            lowerHalf =  removedStaff(pixelCut     :boxes(k).maxY ,left:right);
-            
-            
-            
-            sUpperHalf = size(upperHalf);
-            sLowerHalf = size(lowerHalf);
-            
-            %increase image to correct size
-            if sUpperHalf(1) > sLowerHalf(1)
-                lowerHalf = [lowerHalf; zeros(sUpperHalf(1)-sLowerHalf(1),sLowerHalf(2))];
+            % if red dot is in aabb
+            %boxes(k).dim1
+            if (boxes(k).minX <= noteX) &&(boxes(k).maxX >= noteX) && (boxes(k).minY <= noteY) && (boxes(k).maxY >= noteY)
                 
-            elseif sLowerHalf(1) > sUpperHalf(1)
-                upperHalf =[upperHalf; zeros(sLowerHalf(1)-sUpperHalf(1),sUpperHalf(2))];
+                % make projection
+                left =  noteX - 1.15*staffSpace;
+                right = noteX + 1.15*staffSpace;
+                
+                currBox = [];
+                currBox = [0 0];
+                aabb = [];
+                aabb = [aabb; left boxes(k).maxY];
+                aabb = [aabb; left boxes(k).minY];
+                aabb = [aabb; right boxes(k).minY];
+                aabb = [aabb; right boxes(k).maxY];
+                aabb = [aabb; left boxes(k).maxY];
+                
+                
+                %plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
+                
+                
+                left = floor(left);
+                right = ceil(right);
+                
+                if left < 1
+                    left = 1;
+                end
+                
+                if right > s(2)
+                    right = s(2);
+                end
+                
+                pixelCut = round(noteY);
+                
+                upperHalf =  removedStaff(boxes(k).minY:pixelCut-1    ,left:right);
+                upperHalf = flipdim(upperHalf,1);
+                lowerHalf =  removedStaff(pixelCut     :boxes(k).maxY ,left:right);
+                
+                
+                
+                sUpperHalf = size(upperHalf);
+                sLowerHalf = size(lowerHalf);
+                
+                %increase image to correct size
+                if sUpperHalf(1) > sLowerHalf(1)
+                    lowerHalf = [lowerHalf; zeros(sUpperHalf(1)-sLowerHalf(1),sLowerHalf(2))];
+                    
+                elseif sLowerHalf(1) > sUpperHalf(1)
+                    upperHalf =[upperHalf; zeros(sLowerHalf(1)-sUpperHalf(1),sUpperHalf(2))];
+                end
+               
+                
+                % cut upper part to get only "faehnchen"
+                res = upperHalf + lowerHalf;
+                if debug == 2
+                    figure('name','res'),imshow(res);
+                end
+                sizeRes = size(res,1);
+                resultWidth = sizeRes-1.5*staffSpace;
+                startCut    = sizeRes-resultWidth;
+                res = res(startCut:sizeRes,:);
+                
+                if debug == 2
+                    figure('name','res'),imshow(res);
+                end
+                
+                
+                summeV = sum(res,2);
+                
+                %lowpassfilter
+                fil = [ 1 2 3 2 1];
+                summeVertiFiltered = filter(fil,1,summeV);
+                summeVertiFiltered = [1;summeVertiFiltered];
+                summeVertiFiltered = [summeVertiFiltered;1];
+                
+                if debug == 2
+                    %figure('name','plot of vert projection'),bar(summeVertiFiltered);
+                     vertis(i).data = summeVertiFiltered;
+                end
+               
+                
+                
+                [vertPiks] = findpeaks(summeVertiFiltered);
+                numOfPeaks = sum(vertPiks > max(vertPiks)/2);
+            
+                
+                color = 'c'
+                switch numOfPeaks
+                    case 0
+                        color = 'r';
+                    case 1
+                        color = 'g';
+                    otherwise
+                        color = 'y';
+                end
+                
+                if debug == 1
+                	plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',7);
+                end
+                
+                unfinished = 0;
+                
             end
-            
-
-            staffSpace
-        
-            
-            % cut upper part to get only "faehnchen"
-            res = upperHalf + lowerHalf;
-            
-            sizeRes = size(res,1);
-            resultWidth = sizeRes-staffSpace;
-            startCut    = sizeRes-resultWidth;
-            res = res(startCut:sizeRes,:);
-            %figure('name','res'),imshow(res);
-            
-            
-            summeV = sum(res,2);
-
-            %lowpassfilter
-            fil = [ 1 2 3 2 1];
-            summeVertiFiltered = filter(fil,1,summeV);
-            summeVertiFiltered = [1;summeVertiFiltered];
-            summeVertiFiltered = [summeVertiFiltered;1];
-            %figure('name','plot of vert projection'),bar(summeVertiFiltered);
-            vertis(i).data = summeVertiFiltered;
-            
-           
-            [vertPiks] = findpeaks(summeVertiFiltered);
-            numOfPeaks = sum(vertPiks > max(vertPiks)/2);
-            numOfPeaks
-            
-            color = 'c'
-            switch numOfPeaks
-                case 0
-                    color = 'r';
-                case 1 
-                    color = 'g';
-                otherwise
-                    color = 'y';
-            end
-            plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',7);
-            
-            unfinished = 0;
-            
+            k = k-1;
         end
-        k = k-1;
     end
 end
 
-for i = 1:numOfValues
-    %figure('name','plot of vert projection'),bar(vertis(i).data);
+if debug == 2
+for i = 1:min(numOfValues, numberOfNotes)
+    figure('name','plot of vert projection'),bar(vertis(i).data);
+end
 end
 
 disp('ready');
