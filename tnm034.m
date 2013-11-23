@@ -110,17 +110,6 @@ boundaries = bwboundaries(removedStaff);
 
 numberOfBoundaries = size(boundaries);
 
-% for k = 1 : numberOfBoundaries
-% 
-%     thisBoundary = boundaries{k};
-%     x = max(thisBoundary(:,2))-min(thisBoundary(:,2));
-%     y = max(thisBoundary(:,1))-min(thisBoundary(:,1));
-% 
-%     if x > staffSpace && y > 2*staffSpace
-%         plot(thisBoundary(:,2), thisBoundary(:,1), 'g', 'LineWidth', 2);
-%     end
-% end
-
 disp('ready');
 %staffSpace
 
@@ -138,7 +127,7 @@ removedStaffDiskOpened = bin_rot_comp;
 
 
 % open with a disk to mark noteheads
-se = strel('disk',ceil(staffSpace/2.0+0.5));  
+se = strel('disk',ceil(staffSpace/3.0+0.5));  
 removedStaffDiskOpened = imopen(removedStaffDiskOpened,se);
 figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 
@@ -159,55 +148,145 @@ hold on;
 L = bwlabel(noteHeadFocused);
 stats = regionprops(L,noteHeadFocused,'Centroid');
 
-% for i = 1:length(stats)
-%     
-%     x = stats(i).Centroid(1);
-%     y = stats(i).Centroid(2);
-%     %plot(x,y,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
-% end
-
-
 i = 1;
+
+boxes = repmat( struct('x',[],'y',[],'minX',1,'minY',1,'maxX',1,'maxY',1),1,numberOfBoundaries);
 
 % extract elements, which are big enough
 for k = 1 : numberOfBoundaries 
 
     thisBoundary = boundaries{k};
-    dim2 = thisBoundary(:,1);
-    dim1 = thisBoundary(:,2);
-    height  = max(dim1) - min(dim1);
-    width   = max(dim2) - min(dim2);
+    y = thisBoundary(:,1);
+    x = thisBoundary(:,2);
+    height  = max(y) - min(y);
+    width   = max(x) - min(x);
 
     if width >= staffSpace && height >= staffSpace
-        boxes(i).dim2 = thisBoundary(:,1);
-        boxes(i).dim1 = thisBoundary(:,2);
-        boxes(i).min1 = min(boxes(i).dim1);
-        boxes(i).min2 = min(boxes(i).dim2);
-        boxes(i).max1 = max(boxes(i).dim1);
-        boxes(i).max2 = max(boxes(i).dim2);
+        boxes(i).x = x;
+        boxes(i).y = y;
+        boxes(i).minX = min(x);
+        boxes(i).minY = min(y);
+        boxes(i).maxX = max(x);
+        boxes(i).maxY = max(y);
         
         i = i+1;
     end
 end
 
+% remove empty elements
+boxes = boxes(1:i-1);
 sizeBoxes = size(boxes);
 
+
 % draw the elements
-for i = 1:length(stats)
+% for all red note heads
+for i = 1:5%length(stats)
     
-    dim1 = stats(i).Centroid(1);
-    dim2 = stats(i).Centroid(2);
+    noteY = stats(i).Centroid(2);
+    noteX = stats(i).Centroid(1);
     
     % calculate boundaries
     unfinished = 1;
     k = sizeBoxes(2);
+    % go through all boxes
     while k > 0 && unfinished
 
-        if (boxes(k).min1 <= dim1) &&(boxes(k).max1 >= dim1) && (boxes(k).min2 <= dim2) && (boxes(k).max2 >= dim2)
-            % found the green box, containing this red dot    
-            plot(dim1,dim2,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
-            plot(boxes(k).dim1, boxes(k).dim2, 'b', 'LineWidth', 2);
+        % if red dot is in aabb
+        %boxes(k).dim1
+        if (boxes(k).minX <= noteX) &&(boxes(k).maxX >= noteX) && (boxes(k).minY <= noteY) && (boxes(k).maxY >= noteY)
+            % found the green box, containing this red dot   
+            %draw
+            plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
+            plot(boxes(k).x, boxes(k).y, 'b', 'LineWidth', 2);
+            % make projection
+            left =  noteX - staffSpace;
+            right = noteX + staffSpace;
+            left 
+            right
+            
+            currBox = [];
+            currBox = [0 0];
+            aabb = [];
+            aabb = [aabb; left boxes(k).maxY];
+            aabb = [aabb; left boxes(k).minY];
+            aabb = [aabb; right boxes(k).minY];
+            aabb = [aabb; right boxes(k).maxY];
+            aabb = [aabb; left boxes(k).maxY];
+            
+            plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
+            
+            % get all points out of blue box in this boundary
+            %disp('boxes(k).dim1')
+            %boxes(k).dim2
+%             for j = 1:length(boxes(k).x)
+%                 boderPointX = boxes(k).x(j);
+%                 boderPointY = boxes(k).y(j);
+%                 % if blue point is in our small box
+%                 if left <= boderPointX && right >= boderPointX
+%                     
+%                     %disp('punkt gefunden');
+%                    % d1 
+%                    % d2
+%                      currBox = [currBox; boderPointX boderPointY];
+%                      %currBox
+%                  end
+%             end
+            
+            currBoxImage = removedStaff(boxes(k).minY:boxes(k).maxY,floor(left):ceil(right));
+            
+            
+            figure('name','cut') ,imshow(currBoxImage);
+            
+            pixelCut = round(noteY);
+            
+            upperHalf =  removedStaff(boxes(k).minY:pixelCut-1    ,floor(left):ceil(right));
+            upperHalf = flipdim(upperHalf,1);
+            lowerHalf =  removedStaff(pixelCut     :boxes(k).maxY ,floor(left):ceil(right));
+            
+
+            
+            sUpperHalf = size(upperHalf);
+            sLowerHalf = size(lowerHalf);
+            
+            %increase image to correct size
+            if sUpperHalf(1) > sLowerHalf(1)
+                lowerHalf = [lowerHalf; zeros(sUpperHalf(1)-sLowerHalf(1),sLowerHalf(2))];
+                
+            elseif sLowerHalf(1) > sUpperHalf(1)
+                upperHalf =[upperHalf; zeros(sLowerHalf(1)-sUpperHalf(1),sUpperHalf(2))];   
+            end
+            
+            figure('name','upper'),imshow(upperHalf);
+            figure('name','lower'),imshow(lowerHalf);
+            res = upperHalf + lowerHalf;
+            figure('name','res'),imshow(res);
+            
+            
+            %summeH = sum(currBoxImage,1);
+            %figure('name','plot of horizontal projection'),bar(summeH);
+            summeV = sum(currBoxImage,2);
+            figure('name','plot of vert projection'),bar(summeV);
+           
+            
+          
+            figure('name','cutori'),imshow(removedStaff);
+            
+%             
+%             t = tabulate(currBox(:,2))
+%             countSums = t(t(:,2)~=0, 2);
+%             countSums
+%             countValues = t(t(:,2)~=0, 1);
+%             countValues
+%             
+            
+            
+            %plot(currBox(:,1), currBox(:,2), 'g');%, 'LineWidth', 2);
+            for l = 1:length(currBox(:,1))
+                plot(currBox(l,1), currBox(l,2), 'g');%, 'LineWidth', 2);
+            end
             unfinished = 0;
+            
+            %figure('name','horizontale Zählung'),plot(countValues,countSums);
         end
         k = k-1;
     end

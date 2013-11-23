@@ -11,6 +11,7 @@
 % - 4,8
 % - half line at end
 %file = 'Images_Training/im1s.jpg';
+file = 'Images_Training/im1se.jpg';
 
 %########## Julpolska
 % - 4,8
@@ -43,7 +44,7 @@
 
 %########## Allemande
 % - has 2,4,8,16
-file = 'Images_Training/im13s.jpg';
+%file = 'Images_Training/im13s.jpg';
 %file = 'Images_Training/im13s_grey.jpg';
 
 %########## own composition

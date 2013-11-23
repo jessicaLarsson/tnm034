@@ -10,3 +10,5 @@ TODO
 -getOutlierIndex
 -> Geschwindigkeit optimieren
 
+- for-schleife bei bounding box und rotem punkt entfernen
+
