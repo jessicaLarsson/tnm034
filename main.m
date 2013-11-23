@@ -10,8 +10,8 @@
 %########## Dance
 % - 4,8
 % - half line at end
-%file = 'Images_Training/im1s.jpg';
-file = 'Images_Training/im1se.jpg';
+file = 'Images_Training/im1s.jpg';
+%file = 'Images_Training/im1se.jpg';
 
 %########## Julpolska
 % - 4,8

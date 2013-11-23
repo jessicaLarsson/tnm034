@@ -13,7 +13,7 @@ bin = makeBinary(img);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% rotate image 
+% rotate image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rotationDegree = findRotationHough(bin);
 %rotationDegree = findRotationHoughIterative(im,b,1);
@@ -28,10 +28,10 @@ s = size(bin_rot);
 close all;
 
 % plot of horizontal projection
-    %%%%%% 
-    summe = sum(bin_rot_comp,2);
-    figure('name','plot of horizontal projection'),plot(summe);
-    %%%%%%
+%%%%%%
+summe = sum(bin_rot_comp,2);
+figure('name','plot of horizontal projection'),plot(summe);
+%%%%%%
 
 
 %figure
@@ -52,13 +52,13 @@ close all;
 % cut image with staff information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% cut up and down 
+% cut up and down
 verticalOffset = (5*staffSpace+4*staffHeight);
 up   = startStaffSystem(1) - verticalOffset;
 down = endStaffSystem(end) + verticalOffset;
 
-if up < 0
-    up = 0;
+if up < 1
+    up = 1;
 end
 
 if down > s(1)
@@ -81,9 +81,17 @@ summeVertiFiltered = filter(fil,1,summeVerti);
 while  vertPiks(index) >= vertPiks(index+1)
     index = index +1;
 end
-    
+
 left = vertLocs(index);
 right = s(2);
+
+if left < 1
+    left = 1;
+end
+
+if right > s(2)
+    right = s(2);
+end
 
 bin_rot = bin_rot(up:down,left:right);
 img_rot = img_rot(up:down,left:right);
@@ -106,9 +114,7 @@ figure('name','originalImage binary'), imshow(bin_rot_comp);
 figure('name','erodedImage - without staff'), imshow(removedStaff);
 hold on;
 
-boundaries = bwboundaries(removedStaff);
 
-numberOfBoundaries = size(boundaries);
 
 disp('ready');
 %staffSpace
@@ -125,9 +131,10 @@ removedStaffDiskOpened = bin_rot_comp;
 % removedStaffDiskOpened = imdilate(bin_rot_comp,se);
 % figure('name','erstmal dilatieren'), imshow(removedStaffDiskOpened)
 
-
+% 1se 3
+% 1s  2
 % open with a disk to mark noteheads
-se = strel('disk',ceil(staffSpace/3.0+0.5));  
+se = strel('disk',ceil(staffSpace/2.0+0.5));
 removedStaffDiskOpened = imopen(removedStaffDiskOpened,se);
 figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 
@@ -135,35 +142,45 @@ figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 se = [1 1 1; 1 1 1; 1 1 1];
 noteHeadFocused = imerode(removedStaffDiskOpened, se);
 figure('name','nach Fokusierung'), imshow(noteHeadFocused);
-figure('name','originalImage'), imshow(img_rot);
-hold on;
+
 
 % % /1.5 works best for own picture 14
-% se = strel('disk',ceil(staffSpace/2.0+0.5));  
+% se = strel('disk',ceil(staffSpace/2.0+0.5));
 % noteHeadFocused = imopen(noteHeadFocused,se);
 % figure('name','nach Fokusierung Und Öffnen'), imshow(noteHeadFocused);
 % hold on;
 
 
-L = bwlabel(noteHeadFocused);
-stats = regionprops(L,noteHeadFocused,'Centroid');
 
-i = 1;
 
-boxes = repmat( struct('x',[],'y',[],'minX',1,'minY',1,'maxX',1,'maxY',1),1,numberOfBoundaries);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% detect note value
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% detect connected notes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% get bounding boxes
+boundaries = bwboundaries(removedStaff);
+numberOfBoundaries = size(boundaries);
 
 % extract elements, which are big enough
-for k = 1 : numberOfBoundaries 
+boxes = repmat( struct('x',[],'y',[],'minX',1,'minY',1,'maxX',1,'maxY',1),1,numberOfBoundaries);
 
+i = 1;
+for k = 1 : numberOfBoundaries
+    
     thisBoundary = boundaries{k};
     y = thisBoundary(:,1);
     x = thisBoundary(:,2);
     height  = max(y) - min(y);
     width   = max(x) - min(x);
-
-    if width >= staffSpace && height >= staffSpace
-        boxes(i).x = x;
-        boxes(i).y = y;
+    
+    if width >= staffSpace && height >= 2*staffSpace
+        boxes(i).x = x;%
+        boxes(i).y = y;%
         boxes(i).minX = min(x);
         boxes(i).minY = min(y);
         boxes(i).maxX = max(x);
@@ -177,10 +194,44 @@ end
 boxes = boxes(1:i-1);
 sizeBoxes = size(boxes);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% detect note heads
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+L = bwlabel(noteHeadFocused);
+stats = regionprops(L,noteHeadFocused,'Centroid');
 
-% draw the elements
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% draw
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+figure('name','originalImage'), imshow(img_rot);
+hold on;
+
+% draw the note heads
+for i = 1:length(stats)
+    noteY = stats(i).Centroid(2);
+    noteX = stats(i).Centroid(1);
+    plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
+end
+
+%draw blue lines
+for k = 1:sizeBoxes(2)
+    plot(boxes(k).x, boxes(k).y, 'b', 'LineWidth', 2);
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% detect value
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+figure('name','originalImage'), imshow(img_rot);
+hold on;
+
+numOfValues = length(stats)
+vertis = repmat( struct('data',[]),1,numOfValues);
+
 % for all red note heads
-for i = 1:5%length(stats)
+for i = 1:numOfValues
     
     noteY = stats(i).Centroid(2);
     noteX = stats(i).Centroid(1);
@@ -190,19 +241,14 @@ for i = 1:5%length(stats)
     k = sizeBoxes(2);
     % go through all boxes
     while k > 0 && unfinished
-
+        
         % if red dot is in aabb
         %boxes(k).dim1
         if (boxes(k).minX <= noteX) &&(boxes(k).maxX >= noteX) && (boxes(k).minY <= noteY) && (boxes(k).maxY >= noteY)
-            % found the green box, containing this red dot   
-            %draw
-            plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',3);
-            plot(boxes(k).x, boxes(k).y, 'b', 'LineWidth', 2);
+
             % make projection
             left =  noteX - staffSpace;
             right = noteX + staffSpace;
-            left 
-            right
             
             currBox = [];
             currBox = [0 0];
@@ -213,37 +259,27 @@ for i = 1:5%length(stats)
             aabb = [aabb; right boxes(k).maxY];
             aabb = [aabb; left boxes(k).maxY];
             
-            plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
-            
-            % get all points out of blue box in this boundary
-            %disp('boxes(k).dim1')
-            %boxes(k).dim2
-%             for j = 1:length(boxes(k).x)
-%                 boderPointX = boxes(k).x(j);
-%                 boderPointY = boxes(k).y(j);
-%                 % if blue point is in our small box
-%                 if left <= boderPointX && right >= boderPointX
-%                     
-%                     %disp('punkt gefunden');
-%                    % d1 
-%                    % d2
-%                      currBox = [currBox; boderPointX boderPointY];
-%                      %currBox
-%                  end
-%             end
-            
-            currBoxImage = removedStaff(boxes(k).minY:boxes(k).maxY,floor(left):ceil(right));
+            %plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
             
             
-            figure('name','cut') ,imshow(currBoxImage);
+            left = floor(left);
+            right = ceil(right);
+            
+            if left < 1
+                left = 1;
+            end
+            
+            if right > s(2)
+                right = s(2);
+            end
             
             pixelCut = round(noteY);
             
-            upperHalf =  removedStaff(boxes(k).minY:pixelCut-1    ,floor(left):ceil(right));
+            upperHalf =  removedStaff(boxes(k).minY:pixelCut-1    ,left:right);
             upperHalf = flipdim(upperHalf,1);
-            lowerHalf =  removedStaff(pixelCut     :boxes(k).maxY ,floor(left):ceil(right));
+            lowerHalf =  removedStaff(pixelCut     :boxes(k).maxY ,left:right);
             
-
+            
             
             sUpperHalf = size(upperHalf);
             sLowerHalf = size(lowerHalf);
@@ -253,77 +289,92 @@ for i = 1:5%length(stats)
                 lowerHalf = [lowerHalf; zeros(sUpperHalf(1)-sLowerHalf(1),sLowerHalf(2))];
                 
             elseif sLowerHalf(1) > sUpperHalf(1)
-                upperHalf =[upperHalf; zeros(sLowerHalf(1)-sUpperHalf(1),sUpperHalf(2))];   
+                upperHalf =[upperHalf; zeros(sLowerHalf(1)-sUpperHalf(1),sUpperHalf(2))];
             end
             
-            figure('name','upper'),imshow(upperHalf);
-            figure('name','lower'),imshow(lowerHalf);
+
+            staffSpace
+        
+            
+            % cut upper part to get only "faehnchen"
             res = upperHalf + lowerHalf;
-            figure('name','res'),imshow(res);
+            
+            sizeRes = size(res,1);
+            resultWidth = sizeRes-staffSpace;
+            startCut    = sizeRes-resultWidth;
+            res = res(startCut:sizeRes,:);
+            %figure('name','res'),imshow(res);
             
             
-            %summeH = sum(currBoxImage,1);
-            %figure('name','plot of horizontal projection'),bar(summeH);
-            summeV = sum(currBoxImage,2);
-            figure('name','plot of vert projection'),bar(summeV);
+            summeV = sum(res,2);
+
+            %lowpassfilter
+            fil = [ 1 2 3 2 1];
+            summeVertiFiltered = filter(fil,1,summeV);
+            summeVertiFiltered = [1;summeVertiFiltered];
+            summeVertiFiltered = [summeVertiFiltered;1];
+            %figure('name','plot of vert projection'),bar(summeVertiFiltered);
+            vertis(i).data = summeVertiFiltered;
+            
            
+            [vertPiks] = findpeaks(summeVertiFiltered);
+            numOfPeaks = sum(vertPiks > max(vertPiks)/2);
+            numOfPeaks
             
-          
-            figure('name','cutori'),imshow(removedStaff);
-            
-%             
-%             t = tabulate(currBox(:,2))
-%             countSums = t(t(:,2)~=0, 2);
-%             countSums
-%             countValues = t(t(:,2)~=0, 1);
-%             countValues
-%             
-            
-            
-            %plot(currBox(:,1), currBox(:,2), 'g');%, 'LineWidth', 2);
-            for l = 1:length(currBox(:,1))
-                plot(currBox(l,1), currBox(l,2), 'g');%, 'LineWidth', 2);
+            color = 'c'
+            switch numOfPeaks
+                case 0
+                    color = 'r';
+                case 1 
+                    color = 'g';
+                otherwise
+                    color = 'y';
             end
+            plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',7);
+            
             unfinished = 0;
             
-            %figure('name','horizontale Zählung'),plot(countValues,countSums);
         end
         k = k-1;
     end
 end
 
+for i = 1:numOfValues
+    %figure('name','plot of vert projection'),bar(vertis(i).data);
+end
+
 disp('ready');
 
-% 
+%
 % % show diff to see, that every note was detected
 % diff = removedStaffDiskOpened - removedStaff;
 % figure('name','diffImage'), imshow(diff);
-% 
+%
 % se = strel('line',3*staffSpace,90);
 % %se = [1 1 1; 1 1 1; 1 1 1];
 % removedVertLine = imopen(bin_rot_comp,se);
 % figure('name','originalImage'), imshow(bin_rot_comp);
 % figure('name','erodedImage - without staff'), imshow(removedVertLine);
-% 
-% 
+%
+%
 % % show diff to see, that every note was detected
 % diff = removedStaffDiskOpened + removedVertLine;
 % figure('name','diffImageVert'), imshow(diff);
-% 
+%
 % %choose correct height for head
 % temp = rgb2gray(im2double(imread('templates/NotenkopfVoll.bmp')));
 % temp = imresize(temp, [(staffSpace*1.3) NaN]);
-% 
+%
 % figure('name','temp'),imshow(temp);
-% 
+%
 % cc = normxcorr2(imcomplement(temp),erodedBW);
 % cc = mat2gray(cc);
 % figure('name','templateMatchin'), imshow(cc);
-% 
+%
 % vector = cc(:);
 %     figure('name','Histogram of greyValues in makeBinary');
 %     hist(vector,100);
-% 
+%
 % bw = im2bw(cc, 0.6);
 % se = [ 0 1 0; 1 1 1 ; 0 1 0];
 % bw = imerode(bw,se);
