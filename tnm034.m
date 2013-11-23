@@ -199,13 +199,13 @@ end
 boxes = boxes(1:i-1);
 sizeBoxes = size(boxes);
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 L = bwlabel(noteHeadFocused);
-stats = regionprops(L,noteHeadFocused,'Centroid');
-stats = sortNotes(stats,startStaffSystem,endStaffSystem);
-
+noteHeads = regionprops(L,noteHeadFocused,'Centroid');
+noteHeads = sortNotes(noteHeads,startStaffSystem,endStaffSystem);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % draw
@@ -217,10 +217,10 @@ hold on;
 
 for staff = 1:length(startStaffSystem)
     % for all red note heads
-    for i = 1:length(stats(staff).data)
+    for i = 1:length(noteHeads(staff).data)
         
-        noteX = stats(staff).data(i,1);
-        noteY = stats(staff).data(i,2);
+        noteX = noteHeads(staff).data(i,1);
+        noteY = noteHeads(staff).data(i,2);
         plot(noteX,noteY,'--rs','LineWidth',2,'MarkerFaceColor','r','MarkerSize',2);
     end
 end
@@ -234,13 +234,16 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect value
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%noteValues = repmat( struct('data',[]),1,numOfValues);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 figure('name','originalImage'), imshow(img_rot);
 hold on;
 
 numberOfStaffSystems = length(startStaffSystem);
 
-numOfValues = length(stats(staff).data);
+numOfValues = length(noteHeads(staff).data);
 
 
 debug = 1
@@ -250,7 +253,7 @@ debug = 1
     
 
 if debug == 1
-    numOfValues = length(stats(staff).data);
+    numOfValues = length(noteHeads(staff).data);
     noteStart = 1;
     staffStart = 1;
     staffEnd = numberOfStaffSystems;
@@ -267,13 +270,13 @@ end
 for staff = staffStart:staffEnd
     % for all red note heads
     if debug == 1
-        numberOfNotes=length(stats(staff).data);
+        numberOfNotes=length(noteHeads(staff).data);
     end
     
     for i = noteStart:numberOfNotes
         
-        noteX = stats(staff).data(i,1);
-        noteY = stats(staff).data(i,2);
+        noteX = noteHeads(staff).data(i,1);
+        noteY = noteHeads(staff).data(i,2);
         
         % calculate boundaries
         unfinished = 1;
@@ -394,6 +397,10 @@ for i = 1:min(numOfValues, numberOfNotes)
     figure('name','plot of vert projection'),bar(vertis(i).data);
 end
 end
+
+noteValues = 0;
+buildString( startStaffSystem, endStaffSystem,noteHeads, noteValues, staffSpace, staffHeight)
+
 
 disp('ready');
 
