@@ -1,6 +1,4 @@
 function [S] = buildString( startStaffSystem, endStaffSystem,noteHeads, noteValues, staffSpace, staffHeight)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
 
 S = [];
 % crotchets 1/4

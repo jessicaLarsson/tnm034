@@ -1,4 +1,4 @@
-function [ optimalRotation ] = findRotationHough( binaryImage,debug)
+function [ optimalRotation ] = detectRotationHough( binaryImage,debug)
 
 % Set default values if the argument wasn't passed in, or is empty, as in []
 if (nargin < 2)  ||  isempty(debug)

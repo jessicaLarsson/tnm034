@@ -1,5 +1,5 @@
 %b = reArrangeImage('Images_Training/im9c.jpg'); %worst
-%b = reArrangeImage('Images_Training/im13c.jpg'); %worst
+%file = 'Images_Training/im13c.jpg'; %worst
 
 %close all;
 
@@ -11,7 +11,7 @@
 % - 4,8
 % - half line at end
 file = 'Images_Training/im1s.jpg';
-%file = 'Images_Training/im1se.jpg';
+%file = 'Images_Training/im1see.jpg';
 
 %########## Julpolska
 % - 4,8
@@ -53,4 +53,5 @@ file = 'Images_Training/im1s.jpg';
 
 img = reArrangeImage(file);
 tnm034(img);
+disp('Congratulations. You finished =D');
 
