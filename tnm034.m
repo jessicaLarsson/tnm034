@@ -86,7 +86,7 @@ noteValues = detectNoteValues( removedStaff,img_rot,startStaffSystem, staffSpace
 % draw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-drawResult(img_rot,noteHeads,noteValues);
+%drawResult(img_rot,noteHeads,noteValues);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create String

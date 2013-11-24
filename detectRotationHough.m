@@ -59,8 +59,6 @@ if(degree > 90.0)
     degree = degree -180.0;
 end
 optimalRotation = degree;
-optimalRotation
-
 
 end
 

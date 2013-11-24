@@ -1,8 +1,7 @@
 function [ staffMappedNotes] = sortNotes(stats, start , ende)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
-disp('here we are');
-mid = start + (ende-start)./2
+
+
+mid = start + (ende-start)./2;
 
 staffMappedNotes = repmat(struct('data',[]),length(stats),length(mid));
 for i = 1:length(stats)

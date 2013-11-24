@@ -3,13 +3,13 @@ function [ noteValues ] = detectNoteValues( removedStaff,img_rot,startStaffSyste
 
 
 
-debug = 0
+debug = 0;
 %1 eingefärbte noten
 %2 histogramme
 
 
 cutWidth  = 1.15*staffSpace;
-cutHeight = 1.50*staffSpace;
+cutHeight = 1.7*staffSpace;
 
 numberOfStaffSystems = length(startStaffSystem);
 noteValues = repmat( struct('data',[]),1,numberOfStaffSystems);
@@ -24,11 +24,10 @@ if debug == 1
 end
 
 if debug == 2
-    noteStart = 9;
-    numNotes = 4;
-    staffStart = 3;
-    staffEnd = 3;
-    numOfVertis = 0;
+    noteStart = 4;
+    numNotes = 2;
+    staffStart = 7;
+    staffEnd = staffStart;
 end
 
 
@@ -41,7 +40,7 @@ for staff = staffStart:staffEnd
     noteEnd=length(noteHeads(staff).data);
     
     if debug == 2
-        noteEnd= noteStart+numNotes;
+        noteEnd= noteStart+numNotes-1;
     end
     
     for note = noteStart:noteEnd
@@ -108,10 +107,12 @@ for staff = staffStart:staffEnd
                 
                 
                 % cut upper part to get only "faehnchen"
-                res = upperHalf + lowerHalf;
+                res = im2bw(upperHalf + lowerHalf);
+                
                 if debug == 2
                     figure('name','res'),imshow(res);
                 end
+                
                 sizeRes = size(res,1);
                 resultWidth = sizeRes-cutHeight;
                 startCut    = sizeRes-resultWidth;
@@ -122,22 +123,55 @@ for staff = staffStart:staffEnd
                 end
                 
                 
-                summeV = sum(res,2);
                 
-                %lowpassfilter
-                fil = [ 1 2 3 2 1];
-                summeVertiFiltered = filter(fil,1,summeV);
-                summeVertiFiltered = [1;summeVertiFiltered];
-                summeVertiFiltered = [summeVertiFiltered;1];
+                
+                %horizontal projection
+                summeH = sum(res,1);
+                summeHorizFiltered = summeH;
+                
+                l2 = length(summeHorizFiltered)/2;
+                l  = length(summeHorizFiltered);
+                leftHorizHalf = mean(summeHorizFiltered(1:l2));
+                rightHorizHalf = mean(summeHorizFiltered(l2:l));
                 
                 if debug == 2
-                    figure('name','plot of vert projection'),bar(summeVertiFiltered);
+                    figure('name','plot of hori projection'),bar(summeHorizFiltered);
                 end
                 
                 
                 
-                [vertPiks] = findpeaks(summeVertiFiltered);
-                numOfPeaks = sum(vertPiks > max(vertPiks)/2);
+                if leftHorizHalf > rightHorizHalf
+                    res = res(:,1:l2);
+                else %leftHorizHalf > rightHorizHalf
+                    res = res(:,l2:l);
+                end
+                
+                
+                if debug == 2
+                    figure('name','resTotallyCut'),imshow(res);
+                end
+                
+                
+                %vertical projection
+                summeV = sum(res,2);
+                summeVertiFiltered = summeV;
+                %fil = [5 6 5]
+                %fil = fil./sum(fil(:));
+                %summeVertiFiltered = filter(fil,1,summeV);
+                summeVertiFiltered = [1;summeVertiFiltered];
+                summeVertiFiltered = [summeVertiFiltered;1];
+                
+                
+                if debug == 2
+                    figure('name','plot of vert projection'),plot(summeVertiFiltered);
+                end
+                
+                if max(summeVertiFiltered) < 4
+                    numOfPeaks = 0;
+                else
+                    [vertPiks] = findpeaks(summeVertiFiltered);
+                    numOfPeaks = sum(vertPiks > max(floor(max(vertPiks)/3),3));
+                end
                 
                 
                 switch numOfPeaks
@@ -162,6 +196,12 @@ for staff = staffStart:staffEnd
             end
         end
     end
+end
+
+if debug == 1 || debug == 2
+    drawResultPart(img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd);
+elseif debug == 0
+    drawResult(img_rot,noteHeads,noteValues);
 end
 
 end

@@ -29,21 +29,22 @@ for staff = 1:numberOfStaffSystems
     
     % take every note and add her value
     for note = 1:numberOfNotes
-     
+        
         %calculate index
         noteY = noteHeads(staff).data(note,2)-upperLine;
         idx = round(noteY/noteStep+0.5);
         
-        S = [S char(undef(idx))];
-        
         %??? incomment!
-%         val = noteValues(staff).data(note)
-%         
-%         if  val == 4
-%             S = [S crotchets(idx)];
-%         elseif val ==8
-%             S = [S quavers(idx)];
-%         end
+        %S = [S char(undef(idx))];
+        
+        
+        val = noteValues(staff).data(note);
+        
+        if  val == 4
+            S = [S char(crotchets(idx))];
+        elseif val ==8
+            S = [S char(quavers(idx))];
+        end
         
     end
     %finished line
