@@ -10,7 +10,7 @@
 %########## Dance
 % - 4,8
 % - half line at end
-file = 'Images_Training/im1s.jpg';
+%file = 'Images_Training/im1s.jpg';
 %file = 'Images_Training/im1see.jpg';
 
 %########## Julpolska
@@ -20,7 +20,7 @@ file = 'Images_Training/im1s.jpg';
 %########## Allegro
 % - 4,8 
 % - with Synkopes
-%file = 'Images_Training/im5s.jpg';
+file = 'Images_Training/im5s.jpg';
 
 %########## Pippi Langstrumpf
 % - 2,4,8

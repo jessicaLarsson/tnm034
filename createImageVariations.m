@@ -9,8 +9,8 @@ removedStaff = imopen(bin_rot_comp,se);
 removedStaff = imopen(removedStaff,se);
 %removedStaff = imerode(removedStaff,se);
 %figure('name','originalImage'), imshow(img_rot);
-%figure('name','originalImage binary'), imshow(bin_rot_comp);
-%figure('name','erodedImage - without staff'), imshow(removedStaff);
+figure('name','originalImage binary'), imshow(bin_rot_comp);
+figure('name','erodedImage - without staff'), imshow(removedStaff);
 
 
 % se1 = [ 0 1 1; 0 1 1 ; 1 1 0];
@@ -28,14 +28,14 @@ removedStaffDiskOpened = bin_rot_comp;
 % 1se 3
 % 1s  2
 % open with a disk to mark noteheads
-se = strel('disk',ceil(staffSpace/2.0+0.5));
+se = strel('disk',ceil(staffSpace/2.5+0.5));
 removedStaffDiskOpened = imopen(removedStaffDiskOpened,se);
 %figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 
 % erode to focus points
 se = [1 1 1; 1 1 1; 1 1 1];
 noteHeadFocused = imerode(removedStaffDiskOpened, se);
-%figure('name','nach Fokusierung'), imshow(noteHeadFocused);
+figure('name','nach Fokusierung'), imshow(noteHeadFocused);
 
 
 % % /1.5 works best for own picture 14

@@ -34,7 +34,7 @@ for staff = 1:numberOfStaffSystems
         noteY = noteHeads(staff).data(note,2)-upperLine;
         idx = round(noteY/noteStep+0.5);
         
-        %??? incomment!
+        %??? uncommented!
         %S = [S char(undef(idx))];
         
         
