@@ -1,9 +1,6 @@
 function [ noteValues ] = detectNoteValues( removedStaff,img_rot,startStaffSystem, staffSpace, boxes, noteHeads )
 
-
-
-
-debug = 0;
+debug = 2;
 %1 eingefärbte noten
 %2 histogramme
 
@@ -13,6 +10,7 @@ cutHeight = 1.7*staffSpace;
 
 numberOfStaffSystems = length(startStaffSystem);
 noteValues = repmat( struct('data',[]),1,numberOfStaffSystems);
+noteBeamThickness = ceil(staffSpace/2.0 -0.5);
 
 noteStart = 1;
 staffStart = 1;
@@ -24,9 +22,9 @@ if debug == 1
 end
 
 if debug == 2
-    noteStart = 4;
-    numNotes = 2;
-    staffStart = 7;
+    noteStart = 6;
+    numNotes = 1;
+    staffStart = 4;
     staffEnd = staffStart;
 end
 
@@ -170,7 +168,7 @@ for staff = staffStart:staffEnd
                     numOfPeaks = 0;
                 else
                     [vertPiks] = findpeaks(summeVertiFiltered);
-                    numOfPeaks = sum(vertPiks > max(floor(max(vertPiks)/3),3));
+                    numOfPeaks = sum(vertPiks > max(floor(max(vertPiks)/3),noteBeamThickness));
                 end
                 
                 

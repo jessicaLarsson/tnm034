@@ -11,7 +11,7 @@ switch value
     otherwise
         color = 'r';
 end
-plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',7,'MarkerEdgeColor','b');
+plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',10,'MarkerEdgeColor','b');
 
 end
 

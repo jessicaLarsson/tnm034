@@ -4,12 +4,20 @@ function [ removedStaff, noteHeadFocused] = createImageVariations( bin_rot, img_
 
 % remove staff out of image
 se = strel('line',3,90);
-se2 = [1 1 1; 1 1 1; 1 1 1];
-removedStaff = imopen(bin_rot_comp,se);
+%se2 = [1 1 1; 1 1 1; 1 1 1];
+removedStaff = imopen(img_rot,se);
+figure('name','opened originalImage'), imshow(removedStaff);
+removedStaff = makeBinary(removedStaff);
+removedStaff = imcomplement(removedStaff);
+figure('name','opened originalImage binary'), imshow(removedStaff);
+
 removedStaff = imopen(removedStaff,se);
-%removedStaff = imerode(removedStaff,se);
+removedStaff = imopen(removedStaff,se);
 %figure('name','originalImage'), imshow(img_rot);
-figure('name','originalImage binary'), imshow(bin_rot_comp);
+% figure('name','originalImage binary'), imshow(bin_rot_comp);
+% figure('name','erodedImage - without staff'), imshow(removedStaff);
+% se = [0 1 1; 1 1 0 ; 1 1 0];
+% removedStaff = imdilate(removedStaff,se);
 figure('name','erodedImage - without staff'), imshow(removedStaff);
 
 
