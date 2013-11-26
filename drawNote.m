@@ -6,8 +6,10 @@ switch value
         color = 'y';
     case 8 %1/8
         color = 'g';
-    case 1 %1/8
+    case 1 % not relevant
         color = 'b';
+    case -1 %1/8
+        color = 'm';
     otherwise
         color = 'r';
 end

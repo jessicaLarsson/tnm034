@@ -1,25 +1,32 @@
-function [ removedStaff, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp, staffSpace )
+function [ removedStaff_only,removedStaff_optimizedForBoxes,  noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp, staffSpace )
 
-%se = strel('disk', 3);
 
 % remove staff out of image
 se = strel('line',3,90);
 %se2 = [1 1 1; 1 1 1; 1 1 1];
-removedStaff = imopen(img_rot,se);
-figure('name','opened originalImage'), imshow(removedStaff);
+removedStaff = bin_rot_comp;
+removedStaff = imopen(removedStaff,se);
+removedStaff = imopen(removedStaff,se);
+figure('name','removedStaff_only'), imshow(removedStaff);
+removedStaff_only = removedStaff;
+
+
+
+
+
+
+% remove staff out of image
+se = strel('line',3,90);
+%se2 = [1 1 1; 1 1 1; 1 1 1];
+removedStaff = img_rot;
+removedStaff = imopen(removedStaff,se);
 removedStaff = makeBinary(removedStaff);
 removedStaff = imcomplement(removedStaff);
-figure('name','opened originalImage binary'), imshow(removedStaff);
-
 removedStaff = imopen(removedStaff,se);
-removedStaff = imopen(removedStaff,se);
-%figure('name','originalImage'), imshow(img_rot);
-% figure('name','originalImage binary'), imshow(bin_rot_comp);
-% figure('name','erodedImage - without staff'), imshow(removedStaff);
-% se = [0 1 1; 1 1 0 ; 1 1 0];
-% removedStaff = imdilate(removedStaff,se);
-figure('name','erodedImage - without staff'), imshow(removedStaff);
-
+se = [0 1 0; 1 1 1; 0 1 0];
+removedStaff = imdilate(removedStaff,se);
+figure('name','removedStaff_optimizedForBoxes'), imshow(removedStaff);
+removedStaff_optimizedForBoxes = removedStaff;
 
 % se1 = [ 0 1 1; 0 1 1 ; 1 1 0];
 % se2 = [ 1 1 0; 0 1 1 ; 0 1 1];

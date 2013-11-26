@@ -15,7 +15,7 @@
 
 %########## Julpolska
 % - 4,8
-%file = 'Images_Training/im3s.jpg';
+file = 'Images_Training/im3s.jpg';
 
 %########## Allegro
 % - 4,8 
@@ -44,12 +44,17 @@
 
 %########## Allemande
 % - has 2,4,8,16
-file = 'Images_Training/im13s.jpg';
+%file = 'Images_Training/im13s.jpg';
 %file = 'Images_Training/im13s_grey.jpg';
 
 %########## own composition
 % - has 4,8,16, 32
 %file = 'Images_Training/im14s.jpg';
+
+%########## Guantanamera
+%file = 'Images_Training/im15s.jpg';
+%needed to adapt size!!!
+file = 'Images_Training/im15se.jpg';
 
 img = reArrangeImage(file);
 tnm034(img);

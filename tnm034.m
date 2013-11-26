@@ -64,7 +64,7 @@ endStaffSystem = endStaffSystem -up;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create image variations for later
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[ removedStaff, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace );
+[ removedStaff_only,removedStaff_optimizedForBoxes, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
@@ -76,13 +76,13 @@ noteHeads = detectNoteHeads( noteHeadFocused, startStaffSystem, endStaffSystem);
 % detect connected objects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-boxes = detectConnectedObjects(removedStaff, staffSpace);
+boxes = detectConnectedObjects(removedStaff_optimizedForBoxes, staffSpace);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect values
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noteValues = detectNoteValues( removedStaff,img_rot,startStaffSystem, staffSpace, boxes, noteHeads );
+noteValues = detectNoteValues( removedStaff_only,img_rot,startStaffSystem, staffSpace, boxes, noteHeads );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % draw
