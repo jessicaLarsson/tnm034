@@ -34,7 +34,7 @@
 %########## Titanic
 % - has 1,2,4,8
 % - with Synkopes
-file = 'Images_Training/im6s.jpg';
+%file = 'Images_Training/im6s.jpg';
 
 %########## Naer det lider mot jul
 % - has 2,4,8
@@ -44,7 +44,7 @@ file = 'Images_Training/im6s.jpg';
 
 %########## Allemande
 % - has 2,4,8,16
-%file = 'Images_Training/im13s.jpg';
+file = 'Images_Training/im13s.jpg';
 %file = 'Images_Training/im13s_grey.jpg';
 
 %########## own composition

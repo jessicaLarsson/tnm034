@@ -36,7 +36,12 @@ removedStaffDiskOpened = bin_rot_comp;
 % 1se 3
 % 1s  2
 % open with a disk to mark noteheads
-se = strel('disk',ceil(staffSpace/2.5+0.5));
+se = strel('disk',ceil(staffSpace/2.0+0.5));
+% se = [    0     1     1     1     0;
+%      1     1     1     1     1;
+%      1     1     1     1     1;
+%      1     1     1     1     1;
+%      0     1     1     1     0]
 removedStaffDiskOpened = imopen(removedStaffDiskOpened,se);
 %figure('name','nach disk öffnen'), imshow(removedStaffDiskOpened)
 

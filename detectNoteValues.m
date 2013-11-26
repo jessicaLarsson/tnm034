@@ -22,9 +22,9 @@ if debug == 1
 end
 
 if debug == 2
-    noteStart = 6;
+    noteStart = 4;
     numNotes = 1;
-    staffStart = 4;
+    staffStart = 1;
     staffEnd = staffStart;
 end
 
