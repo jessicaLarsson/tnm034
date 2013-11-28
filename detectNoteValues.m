@@ -190,7 +190,6 @@ for staff = staffStart:staffEnd
                 continueCalc = true;
                 
                 if min(summeHorizFiltered(:)) == beamValue
-                    figure('name','res'),imshow(res);
                     note
                     staff
                     continueCalc = false;
