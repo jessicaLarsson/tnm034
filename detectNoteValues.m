@@ -26,8 +26,8 @@ if debug == 1
 end
 
 if debug > 0
-    noteStart = 16;
-    numNotes = 3;
+    noteStart = 7;
+    numNotes = 1;
     staffStart = 2;
     staffEnd = staffStart;
 end
@@ -203,7 +203,7 @@ for staff = staffStart:staffEnd
                 end
                 
                 if(continueCalc)
-                                       
+                    
                     beamPosition = finalCutLeft + beamIndex;
                     
                     leftHorizHalf = summeHorizFiltered(1:beamIndex-1);
@@ -275,7 +275,7 @@ for staff = staffStart:staffEnd
                     summeVertiFiltered = summeV;
                     %fil = [5 6 5]
                     %fil = fil./sum(fil(:));
-                    %summeVertiFiltered = filter(fil,1,summeV);               
+                    %summeVertiFiltered = filter(fil,1,summeV);
                     
                     
                     summeVertiFiltered = [1;summeVertiFiltered];
@@ -288,6 +288,14 @@ for staff = staffStart:staffEnd
                     if max(summeVertiFiltered) < 4
                         numOfPeaks = 0;
                     else
+                        % filter a little bit
+                        fil = [1 3 1];
+                        fil  = fil./sum(fil(:));
+                        summeVertiFiltered = filter(fil,1,summeVertiFiltered);
+                        if debug == 2
+                            figure('name','plot2 of vert projection'),plot(summeVertiFiltered);
+                        end
+                        
                         [vertPiks] = findpeaks(summeVertiFiltered);
                         numOfPeaks = sum(vertPiks > max(floor(max(vertPiks)/3),noteBeamThickness));
                     end
@@ -302,7 +310,7 @@ for staff = staffStart:staffEnd
                             noteValues(staff).data(note) = 1;
                             
                             summeH = summeH(summeH(:) > 0);
-                          
+                            
                             
                             if((max(summeH) - min(summeH)) > max(summeH)/3 && rightHorizHalf > leftHorizHalf && sum(leftHorizHalf(:)) < 2 )
                                 noteValues(staff).data(note) = 8;

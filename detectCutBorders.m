@@ -29,11 +29,16 @@ summeVertiFiltered = filter(fil,1,summeVerti);
 [vertPiks, vertLocs] = findpeaks(summeVertiFiltered);
 [maxWert, index] = max(vertPiks);
 
-while  vertPiks(index) >= vertPiks(index+1)
-    index = index +1;
+id = index;
+while  id <= length(vertPiks) && vertPiks(id) >= vertPiks(id+1)
+    id = id +1;
 end
 
-left = vertLocs(index);
+if (id == length(vertPiks))
+    id = 1;
+end
+
+left = vertLocs(id);
 right = s(2);
 
 if left < 1

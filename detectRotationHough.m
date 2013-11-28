@@ -46,8 +46,6 @@ degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adapt got optimal rotation
 
-%degree = -(90-abs(degree)); + pipi - 3
-
 % offset of matlab rot and hough
 degree = degree -90.0;
 

@@ -10,7 +10,9 @@ warning('off', 'Images:initSize:adjustingMag');
 %
 % Your program code.
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+img = preprocessing(img);
 
+img = rgb2gray(img);
 bin = makeBinary(img);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

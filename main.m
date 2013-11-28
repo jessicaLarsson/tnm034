@@ -69,9 +69,13 @@ files = [files; file];
 %files = [files; file];
 %files
 
+
+%###############################################
+file = {'Images_Training/im9s.jpg'};
+
 %for file = files'
     %file = files(9);
-    img = reArrangeImage(char(file));
+    img = im2double(imread(char(file)));
     tnm034(img);
 %end
 disp('Congratulations. You finished =D');
