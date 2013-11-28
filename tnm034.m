@@ -24,7 +24,6 @@ img_rot = imrotate(img, rotationDegree);
 
 s = size(bin_rot);
 
-close all;
 
 % plot of horizontal projection
 %%%%%%
