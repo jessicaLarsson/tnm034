@@ -26,8 +26,8 @@ if debug == 1
 end
 
 if debug > 0
-    noteStart = 31;
-    numNotes = 1;
+    noteStart = 16;
+    numNotes = 3;
     staffStart = 2;
     staffEnd = staffStart;
 end
@@ -47,9 +47,9 @@ for staff = staffStart:staffEnd
     
     for note = noteStart:noteEnd
         %if debug > 0
-            disp('###################################################');
-            staff
-            note
+        %disp('###################################################');
+        %staff
+        %note
         %end
         
         noteX = noteHeads(staff).data(note,1);
@@ -204,18 +204,14 @@ for staff = staffStart:staffEnd
                 end
                 
                 if(continueCalc)
+                                       
+                    beamPosition = finalCutLeft + beamIndex;
                     
-                    beamValue
-                    beamIndex
+                    leftHorizHalf = summeHorizFiltered(1:beamIndex-1);
+                    rightHorizHalf = summeHorizFiltered(beamIndex+1:end);
                     
-                    beamPosition = finalCutLeft + beamIndex
-                    
-
-                    leftHorizHalf = summeHorizFiltered(1:beamIndex-1)
-                    rightHorizHalf = summeHorizFiltered(beamIndex+1:end)
-                    
-                    leftHorizHalf = mean(leftHorizHalf(leftHorizHalf(:) < 0.8*beamValue))
-                    rightHorizHalf = mean(rightHorizHalf(rightHorizHalf(:) < 0.8*beamValue))
+                    leftHorizHalf = mean(leftHorizHalf(leftHorizHalf(:) < 0.8*beamValue));
+                    rightHorizHalf = mean(rightHorizHalf(rightHorizHalf(:) < 0.8*beamValue));
                     
                     if debug == 2
                         figure('name','plot of hori projection'),bar(summeHorizFiltered);
@@ -276,13 +272,15 @@ for staff = staffStart:staffEnd
                     
                     %vertical projection
                     summeV = sum(res,2);
+                    summeH = sum(res,1);
                     summeVertiFiltered = summeV;
                     %fil = [5 6 5]
                     %fil = fil./sum(fil(:));
-                    %summeVertiFiltered = filter(fil,1,summeV);
+                    %summeVertiFiltered = filter(fil,1,summeV);               
+                    
+                    
                     summeVertiFiltered = [1;summeVertiFiltered];
                     summeVertiFiltered = [summeVertiFiltered;1];
-                    
                     
                     if debug == 2
                         figure('name','plot of vert projection'),plot(summeVertiFiltered);
@@ -303,6 +301,13 @@ for staff = staffStart:staffEnd
                             noteValues(staff).data(note) = 8;
                         otherwise
                             noteValues(staff).data(note) = 1;
+                            
+                            summeH = summeH(summeH(:) > 0);
+                          
+                            
+                            if((max(summeH) - min(summeH)) > max(summeH)/3 && rightHorizHalf > leftHorizHalf && sum(leftHorizHalf(:)) < 2 )
+                                noteValues(staff).data(note) = 8;
+                            end
                     end
                     unfinished = 0;
                 end

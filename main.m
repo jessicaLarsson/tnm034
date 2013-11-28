@@ -10,12 +10,12 @@
 %########## Dance
 % - 4,8
 % - half line at end
-%file = 'Images_Training/im1s.jpg';
+file = 'Images_Training/im1s.jpg';
 %file = 'Images_Training/im1see.jpg';
 
 %########## Julpolska
 % - 4,8
-file = 'Images_Training/im3s.jpg';
+%file = 'Images_Training/im3s.jpg';
 
 %########## Allegro
 % - 4,8 
@@ -54,7 +54,7 @@ file = 'Images_Training/im3s.jpg';
 %########## Guantanamera
 %file = 'Images_Training/im15s.jpg';
 %needed to adapt size!!!
-file = 'Images_Training/im15se.jpg';
+%file = 'Images_Training/im15se.jpg';
 
 img = reArrangeImage(file);
 tnm034(img);

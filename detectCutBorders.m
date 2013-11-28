@@ -1,4 +1,4 @@
-function [up, down, left, right] = detectCutBorders(bin_rot_comp,startStaffSystem, endStaffSystem ,staffSpace, staffHeight )
+function [up  down left right] = detectCutBorders(bin_rot_comp,startStaffSystem, endStaffSystem ,staffSpace, staffHeight )
 
 s = size(bin_rot_comp);
 
@@ -43,6 +43,11 @@ end
 if right > s(2)
     right = s(2);
 end
+
+left = round(left);
+right = round(right);
+up = round(up);
+down = round(down);
 
 end
 

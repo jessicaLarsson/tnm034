@@ -1,4 +1,4 @@
-function [ clusters,startStaffSystem, endStaffSystem,staffHeight,staffSpace ] = detectStaff( binaryComplementedImage, debug)
+function [ clusters startStaffSystem endStaffSystem staffHeight staffSpace ] = detectStaff( binaryComplementedImage, debug)
 
 % Set default values if the argument wasn't passed in, or is empty, as in []
 if (nargin < 2)  ||  isempty(debug)
