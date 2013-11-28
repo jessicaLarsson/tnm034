@@ -1,62 +1,78 @@
 %b = reArrangeImage('Images_Training/im9c.jpg'); %worst
 %file = 'Images_Training/im13c.jpg'; %worst
 
-%close all;
+close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %easy pictures
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%########## Dance
+files = [];
+%########## Dance %%%%%%%%%%%%%%%%%%%%%%%%%%%% 1
 % - 4,8
 % - half line at end
-file = 'Images_Training/im1s.jpg';
+file = {'Images_Training/im1s.jpg'};
+files = [files; file];
+files
 %file = 'Images_Training/im1see.jpg';
 
-%########## Julpolska
+%########## Julpolska %%%%%%%%%%%%%%%%%%%%%%%% 2
 % - 4,8
-%file = 'Images_Training/im3s.jpg';
+file = {'Images_Training/im3s.jpg'};
+files = [files; file];
+files
 
-%########## Allegro
+%########## Allegro %%%%%%%%%%%%%%%%%%%%%%%%%% 3
 % - 4,8 
 % - with Synkopes
-%file = 'Images_Training/im5s.jpg';
+file = {'Images_Training/im5s.jpg'};
+files = [files; file];
 
-%########## Pippi Langstrumpf
+%########## Pippi Langstrumpf %%%%%%%%%%%%%%%% 4
 % - 2,4,8
-%file = 'Images_Training/im8s.jpg';
+file = {'Images_Training/im8s.jpg'};
+files = [files; file];
 
-%########## Bred dina varingar
+%########## Bred dina varingar %%%%%%%%%%%%%%% 5
 % - has 2,4,8
 % - with Synkopes
-%file = 'Images_Training/im9s.jpg';
+file = {'Images_Training/im9s.jpg'};
+files = [files; file];
 
-%########## Titanic
+%########## Titanic %%%%%%%%%%%%%%%%%%%%%%%%%% 6
 % - has 1,2,4,8
 % - with Synkopes
-%file = 'Images_Training/im6s.jpg';
+file = {'Images_Training/im6s.jpg'};
+files = [files; file];
 
-%########## Naer det lider mot jul
+%########## Naer det lider mot jul %%%%%%%%%%% 7
 % - has 2,4,8
 % - with Synkopes
 % - very long
-%file = 'Images_Training/im10s.jpg';
+file = {'Images_Training/im10s.jpg'};
+files = [files; file];
 
-%########## Allemande
+%########## Allemande %%%%%%%%%%%%%%%%%%%%%%% 8
 % - has 2,4,8,16
-%file = 'Images_Training/im13s.jpg';
+file = {'Images_Training/im13s.jpg'};
 %file = 'Images_Training/im13s_grey.jpg';
+files = [files; file];
 
-%########## own composition
+%########## own composition 
 % - has 4,8,16, 32
 %file = 'Images_Training/im14s.jpg';
+%files = [files; file];
 
-%########## Guantanamera
-%file = 'Images_Training/im15s.jpg';
+%########## Guantanamera %%%%%%%%%%%%%%%%%%%% 9
+%file = {'Images_Training/im15s.jpg'};
 %needed to adapt size!!!
 %file = 'Images_Training/im15se.jpg';
+%files = [files; file];
+%files
 
-img = reArrangeImage(file);
-tnm034(img);
+%for file = files'
+    %file = files(9);
+    img = reArrangeImage(char(file));
+    tnm034(img);
+%end
 disp('Congratulations. You finished =D');
 
