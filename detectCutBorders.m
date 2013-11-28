@@ -30,11 +30,11 @@ summeVertiFiltered = filter(fil,1,summeVerti);
 [maxWert, index] = max(vertPiks);
 
 id = index;
-while  id <= length(vertPiks) && vertPiks(id) >= vertPiks(id+1)
+while  id < length(vertPiks) && vertPiks(id) >= vertPiks(id+1)
     id = id +1;
 end
 
-if (id == length(vertPiks))
+if ((id +1) == length(vertPiks))
     id = 1;
 end
 

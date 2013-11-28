@@ -335,10 +335,8 @@ for staff = staffStart:staffEnd
     
 end
 
-if debug == 1 || debug == 2
+if debug  > 1
     drawResultPart(img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd);
-elseif debug == 0
-    drawResult(img_rot,noteHeads,noteValues);
 end
 
 end

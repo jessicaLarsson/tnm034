@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-function strout = tnm034(img)
+%???? remove h!!!!
+function [strout h] = tnm034(img)
 
 warning('off', 'Images:initSize:adjustingMag');
 %
@@ -90,12 +91,13 @@ noteValues = detectNoteValues( removedStaff_only,img_rot,startStaffSystem, staff
 % draw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%drawResult(img_rot,noteHeads,noteValues);
+h = drawResult(img_rot,noteHeads,noteValues);
+        
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create String
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-strout = buildString( startStaffSystem, endStaffSystem,noteHeads, noteValues, staffSpace, staffHeight)
+strout = buildString( startStaffSystem, endStaffSystem,noteHeads, noteValues, staffSpace, staffHeight);
 
 
 

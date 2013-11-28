@@ -1,6 +1,6 @@
 function [ img ] = preprocessing(img)
 
-figure('name','original'), imshow(img);
+%figure('name','original'), imshow(img);
 
 blue = img(:,:,3);
 %figure('name','original-bl'), imshow(blue);
@@ -24,7 +24,7 @@ img = img(startEdge:endEdge,:,:);
 img = img(:,startEdge:endEdge,:);
 %figure('name','neuesOriH'), imshow(img);
 
-figure('name','neuesOri'), imshow(img);
+%figure('name','neuesOri'), imshow(img);
 
 end
 
