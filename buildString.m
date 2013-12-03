@@ -48,7 +48,9 @@ for staff = 1:numberOfStaffSystems
         
     end
     %finished line
-    S = [S 'n'];
+    if note ~= numberOfNotes
+        S = [S 'n'];
+    end
 end
 
 
