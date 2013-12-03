@@ -17,7 +17,7 @@ for staff = staffStart:staffEnd
         
         noteX = noteHeads(staff).data(note,1);
         noteY = noteHeads(staff).data(note,2);
-        
+  
         drawNote(noteX,noteY,noteValues(staff).data(note), staffSpace );
     end
 end

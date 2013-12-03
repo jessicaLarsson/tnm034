@@ -26,9 +26,9 @@ if debug == 1
 end
 
 if debug > 0
-    noteStart = 5;
+    noteStart = 10;
     numNotes = 1;
-    staffStart = 5;
+    staffStart = 4;
     staffEnd = staffStart;
 end
 
@@ -273,7 +273,7 @@ for staff = staffStart:staffEnd
                     summeV = sum(res,2);
                     summeH = sum(res,1);
                     summeVertiFiltered = summeV;
-                    %fil = [5 6 5]
+                    %fil = [1 1 1 1 1]
                     %fil = fil./sum(fil(:));
                     %summeVertiFiltered = filter(fil,1,summeV);
                     
@@ -283,13 +283,14 @@ for staff = staffStart:staffEnd
                     
                     if debug == 2
                         figure('name','plot of vert projection'),plot(summeVertiFiltered);
+                        figure('name','plot of hori projection'),plot(summeH);
                     end
                     
                     if max(summeVertiFiltered) < 4
                         numOfPeaks = 0;
                     else
                         % filter a little bit
-                        fil = [1 3 1];
+                        fil = [1 1 1 1 1];
                         fil  = fil./sum(fil(:));
                         summeVertiFiltered = filter(fil,1,summeVertiFiltered);
                         if debug == 2
@@ -311,10 +312,6 @@ for staff = staffStart:staffEnd
                             
                             summeH = summeH(summeH(:) > 0);
                             
-                            
-                            if((max(summeH) - min(summeH)) > max(summeH)/3 && rightHorizHalf > leftHorizHalf && sum(leftHorizHalf(:)) < 2 )
-                               noteValues(staff).data(note) = 8;
-                            end
                     end
                     unfinished = 0;
                 end
@@ -336,7 +333,7 @@ for staff = staffStart:staffEnd
 end
 
 if debug  > 1
-    drawResultPart(img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd);
+    drawResultPart(img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd, staffSpace);
 end
 
 end
