@@ -65,8 +65,8 @@ IX;
 degree = 0;
 numbOfLinesUnequalZero = 0.0;
 for i = 1:numOfLinesToUse
-    disp('want to use: ')
-    lines(IX(i)).theta
+    %disp('want to use: ')
+    %lines(IX(i)).theta
     if abs(lines(IX(i)).theta) > 0.001
         numbOfLinesUnequalZero = numbOfLinesUnequalZero+1.0;
         %disp('add')

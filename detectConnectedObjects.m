@@ -17,7 +17,7 @@ for k = 1 : numberOfBoundaries
     height  = max(y) - min(y);
     width   = max(x) - min(x);
     
-    if width >= staffSpace && height >= 2*staffSpace
+    if width >= staffSpace && height >= 3.0*staffSpace
         boxes(i).x = x;%
         boxes(i).y = y;%
         boxes(i).minX = min(x);

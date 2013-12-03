@@ -20,7 +20,7 @@ bin = makeBinary(img);
 % rotate image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 rotationDegree = detectRotationHough(bin);
-rotationDegree
+%rotationDegree
 
 bin_rot_comp = imrotate(imcomplement(bin), rotationDegree);
 bin_rot = imcomplement(bin_rot_comp);
@@ -74,7 +74,7 @@ endStaffSystem = endStaffSystem -up;
 % detect note heads
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noteHeads = detectNoteHeads( noteHeadFocused, startStaffSystem, endStaffSystem);
+noteHeads = detectNoteHeads( noteHeadFocused, startStaffSystem, endStaffSystem, staffSpace);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect connected objects

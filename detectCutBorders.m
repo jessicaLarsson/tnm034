@@ -1,4 +1,9 @@
-function [up  down left right] = detectCutBorders(bin_rot_comp,startStaffSystem, endStaffSystem ,staffSpace, staffHeight )
+function [up  down left right] = detectCutBorders(bin_rot_comp,startStaffSystem, endStaffSystem ,staffSpace, staffHeight, debug )
+
+% Set default values if the argument wasn't passed in, or is empty, as in []
+if (nargin < 6)  ||  isempty(debug)
+    debug = 0;
+end
 
 s = size(bin_rot_comp);
 
@@ -22,23 +27,38 @@ end
 
 %lowpassfilter
 summeVerti = sum(bin_rot_comp,1);
-fil = [1 2 3 2 1];
+fil = [1 2 3 4 3 2 1];
 summeVertiFiltered = filter(fil,1,summeVerti);
+summeVertiFiltered = summeVertiFiltered(1:s(2)/4);
+med = median(summeVertiFiltered);
 
 %identify "Notenschlüssel"-Pik and get first minima after that
-[vertPiks, vertLocs] = findpeaks(summeVertiFiltered);
-[maxWert, index] = max(vertPiks);
-
-id = index;
-while  id < length(vertPiks) && vertPiks(id) >= vertPiks(id+1)
-    id = id +1;
+[vertPiks, vertLocs] = findpeaks(summeVertiFiltered(:));
+if debug
+    figure('name','plot of summeVertiFiltered'),plot(summeVertiFiltered(:));
 end
+vertLocsCutted = vertLocs;%(vertPiks > med);
+vertPiksCutted = vertPiks;%(vertPiks > med);
+
+[maxValue, maxID] = max(vertPiksCutted);
+leftID = vertLocsCutted(maxID);
+rightID = vertLocsCutted(maxID +1);
+
+
+[minValue, minID] = min(summeVertiFiltered(leftID:rightID));
+
+
+% id = vertLocsCutted(maxID);
+% while  id < length(summeVertiFiltered) && summeVertiFiltered(id) >= summeVertiFiltered(id+1)
+%     id = id +1;
+% end
+id = minID + leftID;
 
 if ((id +1) == length(vertPiks))
     id = 1;
 end
 
-left = vertLocs(id);
+left = id;
 right = s(2);
 
 if left < 1

@@ -1,5 +1,8 @@
-function [ removedStaff_only,removedStaff_optimizedForBoxes,  noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp, staffSpace )
+function [ removedStaff_only,removedStaff_optimizedForBoxes,  noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp, staffSpace,debug )
 
+if (nargin < 5)  ||  isempty(debug)
+    debug = 0;
+end
 
 % remove staff out of image
 se = strel('line',3,90);
@@ -7,8 +10,10 @@ se = strel('line',3,90);
 removedStaff = bin_rot_comp;
 removedStaff = imopen(removedStaff,se);
 removedStaff = imopen(removedStaff,se);
-%figure('name','removedStaff_only'), imshow(removedStaff);
 removedStaff_only = removedStaff;
+if debug
+    figure('name','removedStaff_only'), imshow(removedStaff_only);
+end
 
 % remove staff out of image
 se = strel('line',3,90);
@@ -20,8 +25,10 @@ removedStaff = imcomplement(removedStaff);
 removedStaff = imopen(removedStaff,se);
 se = [0 1 0; 1 1 1; 0 1 0];
 removedStaff = imdilate(removedStaff,se);
-%figure('name','removedStaff_optimizedForBoxes'), imshow(removedStaff);
 removedStaff_optimizedForBoxes = removedStaff;
+if debug
+figure('name','removedStaff_optimizedForBoxes'), imshow(removedStaff_optimizedForBoxes);
+end
 
 removedStaffDiskOpened = bin_rot_comp;
 % fill small holes
@@ -65,8 +72,10 @@ removedStaffDiskOpened = removedStaffDiskOpened & errorDetects;
 % erode to focus points
 se = [1 1 1; 1 1 1; 1 1 1];
 noteHeadFocused = imerode(removedStaffDiskOpened, se);
-%figure('name','nach Fokusierung'), imshow(noteHeadFocused);
 
+if debug
+figure('name','noteHeadFocused'), imshow(noteHeadFocused);
+end
 
 end
 
