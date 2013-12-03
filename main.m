@@ -66,8 +66,13 @@ switch debug
     %###############################################
     
     case 0
+        file = scanFiles(1);
+        img = im2double(imread(char(file)));
+        tnm034(img);
         file = scanFiles(6);
-        %file = photFiles(2);
+        img = im2double(imread(char(file)));
+        tnm034(img);
+        file = scanFiles(8);
         img = im2double(imread(char(file)));
         tnm034(img);
         

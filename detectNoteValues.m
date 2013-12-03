@@ -26,9 +26,9 @@ if debug == 1
 end
 
 if debug > 0
-    noteStart = 7;
+    noteStart = 5;
     numNotes = 1;
-    staffStart = 2;
+    staffStart = 5;
     staffEnd = staffStart;
 end
 
@@ -209,8 +209,8 @@ for staff = staffStart:staffEnd
                     leftHorizHalf = summeHorizFiltered(1:beamIndex-1);
                     rightHorizHalf = summeHorizFiltered(beamIndex+1:end);
                     
-                    leftHorizHalf = mean(leftHorizHalf(leftHorizHalf(:) < 0.8*beamValue));
-                    rightHorizHalf = mean(rightHorizHalf(rightHorizHalf(:) < 0.8*beamValue));
+                    leftHorizHalf = mean(leftHorizHalf(leftHorizHalf(:) < 0.7*beamValue));
+                    rightHorizHalf = mean(rightHorizHalf(rightHorizHalf(:) < 0.7*beamValue));
                     
                     if debug == 2
                         figure('name','plot of hori projection'),bar(summeHorizFiltered);
@@ -222,7 +222,7 @@ for staff = staffStart:staffEnd
                         finalCutRight = beamPosition - 1;
                         finalCutLeft = beamPosition - cutWidthFlag;
                         
-                    else %leftHorizHalf > rightHorizHalf
+                    else %leftHorizHalf < rightHorizHalf
                         finalCutLeft = beamPosition + 1;
                         finalCutRight = beamPosition + cutWidthFlag;
                     end
@@ -313,7 +313,7 @@ for staff = staffStart:staffEnd
                             
                             
                             if((max(summeH) - min(summeH)) > max(summeH)/3 && rightHorizHalf > leftHorizHalf && sum(leftHorizHalf(:)) < 2 )
-                                noteValues(staff).data(note) = 8;
+                               noteValues(staff).data(note) = 8;
                             end
                     end
                     unfinished = 0;
