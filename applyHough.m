@@ -41,17 +41,16 @@ end
 diffMatrix = zeros(numOfLinesToFind,1);
 
 for i = 1:numOfLinesToFind
-    disp('Runde i: ')
-       i
-    lines(i).theta
+    %disp('Runde i: ')
+    %i
     for j = 1:numOfLinesToFind
-%         disp('Runde j: ')
-%         js
-%         disp('lines i');
-%         lines(i).theta
-%         disp('lines j');
-%         lines(j).theta
-        
+        %         disp('Runde j: ')
+        %         js
+        %         disp('lines i');
+        %         lines(i).theta
+        %         disp('lines j');
+        %         lines(j).theta
+
         diffMatrix(i) = diffMatrix(i) + dist(lines(i).theta,lines(j).theta);
     end
 end
@@ -70,11 +69,21 @@ for i = 1:numOfLinesToUse
     lines(IX(i)).theta
     if abs(lines(IX(i)).theta) > 0.001
         numbOfLinesUnequalZero = numbOfLinesUnequalZero+1.0;
-        degree = degree+lines(IX(i)).theta;
-        degree
+        %disp('add')
+        % a = sign(lines(IX(i)).theta)*90-lines(IX(i)).theta;
+        % a
+        degree = degree + sign(lines(IX(i)).theta)*90-lines(IX(i)).theta;
+        %disp('summed')
+        %degree
     end
 end
 degree = degree / numbOfLinesUnequalZero;
+degree = sign(degree)*90 - degree;
+%degree
+
+if abs(degree) < 1.0e-6
+    degree = -90;
+end
 
 if debug
     figure, imshow(b), hold on
@@ -104,6 +113,8 @@ if debug
     degree
     disp('applyHoughReady');
 end
+
+
 
 end
 

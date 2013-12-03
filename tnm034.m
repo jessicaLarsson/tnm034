@@ -19,7 +19,8 @@ bin = makeBinary(img);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % rotate image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-rotationDegree = detectRotationHough(bin, 1);
+rotationDegree = detectRotationHough(bin);
+rotationDegree
 
 bin_rot_comp = imrotate(imcomplement(bin), rotationDegree);
 bin_rot = imcomplement(bin_rot_comp);

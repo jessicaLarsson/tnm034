@@ -17,7 +17,7 @@ stepSizeLocalHough = 0.05;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % global step
 
-degree = applyHough(b,-90,89.9,stepSizeGlobalHough, 1);
+degree = applyHough(b,-90,89.9,stepSizeGlobalHough);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % refinement step
