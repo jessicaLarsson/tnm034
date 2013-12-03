@@ -14,6 +14,10 @@ removedStaff_only = removedStaff;
 if debug
     figure('name','removedStaff_only'), imshow(removedStaff_only);
 end
+removedStaff_only = bwareaopen(removedStaff_only, 2*staffSpace);
+if debug
+    figure('name','removedStaff_only'), imshow(removedStaff_only);
+end
 
 % remove staff out of image
 se = strel('line',3,90);

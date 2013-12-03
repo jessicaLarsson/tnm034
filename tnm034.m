@@ -68,7 +68,7 @@ endStaffSystem = endStaffSystem -up;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create image variations for later
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[ removedStaff_only,removedStaff_optimizedForBoxes, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace );
+[ removedStaff_only,removedStaff_optimizedForBoxes, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace,1 );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
