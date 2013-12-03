@@ -48,7 +48,6 @@ s = size(bin_rot);
 % detect the staff - get information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [ clusters startStaffSystem endStaffSystem staffHeight staffSpace ] = detectStaff(bin_rot_comp);
-staffSpace
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,7 +67,7 @@ endStaffSystem = endStaffSystem -up;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create image variations for later
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[ removedStaff_only,removedStaff_optimizedForBoxes, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace,1 );
+[ removedStaff_only,removedStaff_optimizedForBoxes, noteHeadFocused] = createImageVariations( bin_rot, img_rot, bin_rot_comp,staffSpace);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % detect note heads
@@ -92,9 +91,10 @@ noteValues = detectNoteValues( removedStaff_only,img_rot,startStaffSystem, staff
 % draw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-h = drawResult(img_rot,noteHeads,noteValues);
+drawResult(img_rot,noteHeads,noteValues, staffSpace );
         
-
+h = generateSaveImage(img_rot,noteHeads,noteValues, staffSpace);
+%figure('name','tmp'), imshow(h);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create String
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

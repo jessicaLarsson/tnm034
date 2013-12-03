@@ -53,7 +53,7 @@ file = {'Images_Training/im13c.jpg'};photFiles = [photFiles; file];
 %file = 'Images_Training/im15se.jpg';
 %scanFiles = [scanFiles; file];
 %scanFiles
-debug = 3;
+debug = 0;
 % 0 einzel
 % 1 mach alle dateien
 % 2 teste block
@@ -157,10 +157,9 @@ switch debug
         
         fileID = -1;
         status = mkdir(folder);
-        status
         if(status)
             fileID = fopen(stringSaveFile,'w');
-            disp('saveImages');
+            %disp('saveImages');
             for file = scanFiles'
                 try%# Attempt to perform some computation
                     filePath = [];
@@ -171,7 +170,8 @@ switch debug
                     img = im2double(imread(char(file)));
                     [str, h] = tnm034(img);
                     fprintf(fileID,'%s = ''%s'';\n',char(fileName),str);
-                    print(h, '-djpeg', char(filePath));
+                    filePath = [filePath '.jpg'];
+                    imwrite(h,char(filePath), 'jpg');
                     successFiles = [successFiles; file];
                 catch exception %# Catch the exception
                     failedFiles = [failedFiles; file];

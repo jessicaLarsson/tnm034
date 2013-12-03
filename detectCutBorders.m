@@ -29,7 +29,7 @@ end
 summeVerti = sum(bin_rot_comp,1);
 fil = [1 2 3 4 3 2 1];
 summeVertiFiltered = filter(fil,1,summeVerti);
-summeVertiFiltered = summeVertiFiltered(1:s(2)/4);
+summeVertiFiltered = summeVertiFiltered(floor(1:s(2)/4));
 med = median(summeVertiFiltered);
 
 %identify "Notenschlüssel"-Pik and get first minima after that

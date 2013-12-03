@@ -1,7 +1,8 @@
-function [h] = drawResultPart( img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd)
+function [h] = drawResultPart( img_rot,noteHeads,noteValues , staffStart, staffEnd, noteStart, noteEnd, staffSpace )
 
 h = figure('name','originalImageWithDetectedNotesAndValues');
 imshow(img_rot);
+
 hold on;
 
 noteEndBasic = noteEnd;
@@ -17,7 +18,7 @@ for staff = staffStart:staffEnd
         noteX = noteHeads(staff).data(note,1);
         noteY = noteHeads(staff).data(note,2);
         
-        drawNote(noteX,noteY,noteValues(staff).data(note));
+        drawNote(noteX,noteY,noteValues(staff).data(note), staffSpace );
     end
 end
 

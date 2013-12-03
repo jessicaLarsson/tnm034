@@ -1,4 +1,4 @@
-function [] = drawNote( noteX, noteY, value )
+function [] = drawNote( noteX, noteY, value, staffSpace )
 
 switch value
     
@@ -13,7 +13,7 @@ switch value
     otherwise
         color = 'r';
 end
-plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',10,'MarkerEdgeColor','b');
+plot(noteX,noteY,'--rs','MarkerFaceColor',color,'MarkerSize',staffSpace-1,'MarkerEdgeColor','b');
 
 end
 
