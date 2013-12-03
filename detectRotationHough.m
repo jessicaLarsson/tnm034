@@ -9,9 +9,6 @@ end
 %edge detection
 b = sobelOperator(binaryImage,1,1);
 
-%test
-%b = imrotate(b, -15.3);
-
 %first go over all degrees
 
 stepSizeGlobalHough = 0.5;
@@ -20,7 +17,7 @@ stepSizeLocalHough = 0.05;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % global step
 
-degree = applyHough(b,-90,89.9,stepSizeGlobalHough);
+degree = applyHough(b,-90,89.9,stepSizeGlobalHough, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % refinement step

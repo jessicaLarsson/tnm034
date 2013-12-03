@@ -33,7 +33,7 @@ while (numLinesFound < numOfLinesToFind)
         plot(x,y,'s','color','black');
     end
 
-    lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',1);
+    lines = houghlines(b,theta,rho,P,'FillGap',100,'MinLength',length(b)/5);
 
     numLinesFound = length(lines);
 end
@@ -41,15 +41,16 @@ end
 diffMatrix = zeros(numOfLinesToFind,1);
 
 for i = 1:numOfLinesToFind
-    %disp('Runde i: ')
-    %    i
+    disp('Runde i: ')
+       i
+    lines(i).theta
     for j = 1:numOfLinesToFind
-        %disp('Runde j: ')
-        %j
-        %disp('lines i');
-        %lines(i).theta
-        %disp('lines j');
-        %lines(j).theta
+%         disp('Runde j: ')
+%         js
+%         disp('lines i');
+%         lines(i).theta
+%         disp('lines j');
+%         lines(j).theta
         
         diffMatrix(i) = diffMatrix(i) + dist(lines(i).theta,lines(j).theta);
     end
@@ -65,11 +66,12 @@ IX;
 degree = 0;
 numbOfLinesUnequalZero = 0.0;
 for i = 1:numOfLinesToUse
-    %disp('want to use: ')
-    %lines(IX(i)).theta
+    disp('want to use: ')
+    lines(IX(i)).theta
     if abs(lines(IX(i)).theta) > 0.001
         numbOfLinesUnequalZero = numbOfLinesUnequalZero+1.0;
         degree = degree+lines(IX(i)).theta;
+        degree
     end
 end
 degree = degree / numbOfLinesUnequalZero;

@@ -54,130 +54,134 @@ file = {'Images_Training/im13c.jpg'};photFiles = [photFiles; file];
 %file = 'Images_Training/im15se.jpg';
 %scanFiles = [scanFiles; file];
 %scanFiles
+debug = 0;
 
-
-%###############################################
-% make single tests
-%###############################################
-
-
-%file = scanFiles(9);
-%file = photFiles(5);
-%img = im2double(imread(char(file)));
-%tnm034(img);
-
-
- failedFiles = {};  %# To store a list of the files that failed to convert
- successFiles = {};
-for file = scanFiles'
-    try%# Attempt to perform some computation
+switch debug
+    
+    %###############################################
+    % make single tests
+    %###############################################
+    
+    case 0
+        file = scanFiles(2);
+        %file = photFiles(2);
         img = im2double(imread(char(file)));
         tnm034(img);
-        successFiles = [successFiles; file];
-    catch exception %# Catch the exception
-        failedFiles = [failedFiles; file];
-        continue %# Pass control to the next loop iteration
-    end
+        
+    case 1
+        
+        failedFiles = {};  %# To store a list of the files that failed to convert
+        successFiles = {};
+        for file = photFiles'
+            try%# Attempt to perform some computation
+                img = im2double(imread(char(file)));
+                tnm034(img);
+                successFiles = [successFiles; file];
+            catch exception %# Catch the exception
+                failedFiles = [failedFiles; file];
+                continue %# Pass control to the next loop iteration
+            end
+        end
+        successFiles
+        failedFiles
+        
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % test the state
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+    case 2
+        
+        disp('run tests')
+        failedFiles = {};  %# To store a list of the files that failed to convert
+        successFiles = {};
+        for file = scanFiles'
+            %try%# Attempt to perform some computation
+            strCompare = eval(getCompareName(file));
+            img = im2double(imread(char(file)));
+            strFile = tnm034(img);
+            
+            if(strcmp(strFile, strCompare))
+                disp('---------------------------------------');
+                fprintf('Alles ok bei %s',char(file));
+                successFiles = [successFiles; char(file)];
+            else
+                disp('#####################################')
+                fprintf('Fehler bei %s',char(file));
+                strFile
+                strCompare
+                failedFiles = [failedFiles; char(file)];
+            end
+        end
+        close all;
+        successFiles
+        failedFiles
+        
+        
+        
+    case 3
+        
+        
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % save the state
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        %[year month day hour minute seconds]
+        c = clock;
+        folder=[];
+        folder = [folder 'autoSaved/save_'];
+        folder = [folder num2str(c(1))];
+        folder = [folder '-'];
+        folder = [folder num2str(c(2))];
+        folder = [folder '-'];
+        folder = [folder num2str(c(3))];
+        folder = [folder '_'];
+        folder = [folder num2str(c(4))];
+        folder = [folder '-'];
+        folder = [folder num2str(c(5))];
+        
+        failedFiles = {};  %# To store a list of the files that failed to convert
+        successFiles = {};
+        
+        
+        
+        stringSaveFile = [];
+        stringSaveFile = [stringSaveFile folder];
+        stringSaveFile = [stringSaveFile '/strings.txt'];
+        
+        
+        
+        fileID = -1;
+        status = mkdir(folder);
+        status
+        if(status)
+            fileID = fopen(stringSaveFile,'w');
+            disp('saveImages');
+            for file = scanFiles'
+                try%# Attempt to perform some computation
+                    filePath = [];
+                    filePath = [filePath folder];
+                    filePath = [filePath '/'];
+                    fileName = getCompareName(file);
+                    filePath = [filePath fileName];
+                    img = im2double(imread(char(file)));
+                    [str, h] = tnm034(img);
+                    fprintf(fileID,'%s = ''%s'';\n',char(fileName),str);
+                    print(h, '-djpeg', char(filePath));
+                    successFiles = [successFiles; file];
+                catch exception %# Catch the exception
+                    failedFiles = [failedFiles; file];
+                    continue %# Pass control to the next loop iteration
+                end
+            end
+            fclose(fileID);
+        end
+        close all;
+        successFiles
+        failedFiles
+        
 end
-successFiles
-failedFiles
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% test the state
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% 
-% 
-% disp('run tests')
-%  failedFiles = {};  %# To store a list of the files that failed to convert
-%  successFiles = {};
-% for file = scanFiles'
-%     %try%# Attempt to perform some computation
-%         strCompare = eval(getCompareName(file));
-%         img = im2double(imread(char(file)));
-%         strFile = tnm034(img);
-% 
-%         if(strcmp(strFile, strCompare))
-%             disp('---------------------------------------');
-%             fprintf('Alles ok bei %s',char(file));
-%             successFiles = [successFiles; char(file)];
-%         else
-%             disp('#####################################')
-%             fprintf('Fehler bei %s',char(file));
-%             strFile
-%             strCompare
-%             failedFiles = [failedFiles; char(file)];
-%         end
-% end
-% close all;
-% successFiles
-% failedFiles
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% save the state
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %[year month day hour minute seconds]
-% c = clock;
-% folder=[];
-% folder = [folder 'autoSaved/save_'];
-% folder = [folder num2str(c(1))];
-% folder = [folder '-'];
-% folder = [folder num2str(c(2))];
-% folder = [folder '-'];
-% folder = [folder num2str(c(3))];
-% folder = [folder '_'];
-% folder = [folder num2str(c(4))];
-% folder = [folder '-'];
-% folder = [folder num2str(c(5))];
-% 
-% failedFiles = {};  %# To store a list of the files that failed to convert
-%  successFiles = {};
-%  
-% 
-% 
-% stringSaveFile = [];
-% stringSaveFile = [stringSaveFile folder];
-% stringSaveFile = [stringSaveFile '/strings.txt'];
-% 
-% 
-% 
-% fileID = -1;
-% status = mkdir(folder);
-% status
-% if(status)
-%     fileID = fopen(stringSaveFile,'w');
-%     disp('saveImages');
-%     for file = scanFiles'
-%         try%# Attempt to perform some computation
-%              filePath = [];
-%             filePath = [filePath folder];
-%             filePath = [filePath '/'];
-%             fileName = getCompareName(file);
-%             filePath = [filePath fileName];
-%             img = im2double(imread(char(file)));
-%             [str, h] = tnm034(img);
-%             fprintf(fileID,'%s = ''%s'';\n',char(fileName),str);
-%             print(h, '-djpeg', char(filePath));
-%             successFiles = [successFiles; file];
-%     catch exception %# Catch the exception
-%         failedFiles = [failedFiles; file];
-%         continue %# Pass control to the next loop iteration
-%     end
-%     end
-%     fclose(fileID);
-% end
-% close all;
-% successFiles
-% failedFiles
-% 
-% 
+%
 % disp('Congratulations. You finished =D');
-% 
+%
