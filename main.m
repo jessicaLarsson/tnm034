@@ -74,7 +74,8 @@ switch debug
 %         tnm034(img);
         file = scanFiles(1);
         img = im2double(imread(char(file)));
-        tnm034(img);
+        s = tnm034(img);
+        s
         
     case 1
         
