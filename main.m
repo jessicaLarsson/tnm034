@@ -72,7 +72,7 @@ switch debug
 %         file = scanFiles(6);
 %         img = im2double(imread(char(file)));
 %         tnm034(img);
-        file = scanFiles(8);
+        file = scanFiles(1);
         img = im2double(imread(char(file)));
         tnm034(img);
         

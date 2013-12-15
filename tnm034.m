@@ -2,6 +2,8 @@
 %???? remove h!!!!
 function [strout h] = tnm034(img)
 
+%figure
+%imshow(img);
 warning('off', 'Images:initSize:adjustingMag');
 %
 % Im: Input image of captured sheet music. Im should be in
@@ -54,6 +56,8 @@ s = size(bin_rot);
 % cut image with staff information
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
 [up down left right] = detectCutBorders(bin_rot_comp,startStaffSystem, endStaffSystem, staffSpace, staffHeight);
 
 bin_rot = bin_rot(up:down,left:right);
@@ -63,6 +67,8 @@ bin_rot_comp = bin_rot_comp(up:down,left:right);
 %recalculate start and end staff system
 startStaffSystem = startStaffSystem - up;
 endStaffSystem = endStaffSystem -up;
+
+%figure, imshow(imcomplement(img_rot))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create image variations for later
@@ -85,7 +91,7 @@ boxes = detectConnectedObjects(removedStaff_optimizedForBoxes, staffSpace);
 % detect values
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noteValues = detectNoteValues( removedStaff_only,img_rot,startStaffSystem, staffSpace, boxes, noteHeads );
+noteValues = detectNoteValues( removedStaff_only,img_rot,startStaffSystem, staffSpace, boxes, noteHeads);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % draw

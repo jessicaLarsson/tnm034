@@ -86,11 +86,11 @@ if abs(degree) < 1.0e-6
 end
 
 if debug
-    figure, imshow(b), hold on
+    figure, imshow(imcomplement(b)), hold on
     max_len = 0;
     for k = 1:length(lines)
        xy = [lines(k).point1; lines(k).point2];
-       plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
+       plot(xy(:,1),xy(:,2),'LineWidth',6,'Color','blue');
 
        % Plot beginnings and ends of lines
        plot(xy(1,1),xy(1,2),'x','LineWidth',2,'Color','yellow');
@@ -105,7 +105,7 @@ if debug
     end
 
     % highlight the longest line segment
-    plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','blue');
+    plot(xy_long(:,1),xy_long(:,2),'LineWidth',3,'Color','red');
 end
 
 if debug

@@ -61,7 +61,7 @@ pksOfHorizProjection = mat2gray(pksH);
 pksOfVertiProjection = mat2gray(pksV);
     if (debug)
         vector = pksOfHorizProjection(:);
-        figure('name','PeakHistogramHoriz'), hist(vector,20);
+        figure('name','PeakHistogramHoriz'), hist(vector,length(pksH));
     end
 % get level between staff and notes etc.
 level = graythresh(pksOfHorizProjection);
@@ -74,7 +74,7 @@ locationOfPeaks(locationOfPeaks==0) = [];
 
     if(debug)
         % draw peaks
-        figure('name','peaksOnImage'), imshow(diff);
+        figure('name','peaksOnImage'), imshow(imcomplement(diff));
         hold on;
         for i = 1:length(locationOfPeaks)
             height = locationOfPeaks(i);
@@ -96,7 +96,7 @@ seedPointsDistance = floor((seedEnd-seedStart)/(numOfClusters-1));
 seedPoints = seedStart:seedPointsDistance:seedEnd;
     if(debug)
         % draw seeds
-        figure('name','seedsOnImage'), imshow(diff);
+        figure('name','seedsOnImage'), imshow(imcomplement(diff));
         hold on;
         grey = [0.5, 0.5, 0.5];
         for i = 1:length(seedPoints)
@@ -111,7 +111,7 @@ seedPoints = seedStart:seedPointsDistance:seedEnd;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if (debug) 
-        figure('name','clusterOnEdgePicture'), imshow(diff);
+        figure('name','clusterOnEdgePicture'), imshow(imcomplement(diff));
         hold on;
         
         
@@ -187,7 +187,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if (debug) 
-        figure('name','clusterOnEdgePicture'), imshow(diff);
+        figure('name','clusterOnEdgePicture'), imshow(imcomplement(diff));
         hold on;
         
         for i= 1:length(locationOfPeaks)
@@ -251,7 +251,7 @@ staffHeight = (summedStaffDistance-staffSpace*4*numOfClusters)/(5*numOfClusters)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if (debug) 
-        figure('name','staffSystem'), imshow(diff);
+        figure('name','staffSystem'), imshow(imcomplement(diff));
         hold on;
         
         color = 'r';

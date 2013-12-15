@@ -4,6 +4,10 @@ if (nargin < 5)  ||  isempty(debug)
     debug = 0;
 end
 
+if debug
+    figure('name','img_rot'), imshow(img_rot);
+end
+
 % remove staff out of image
 se = strel('line',3,90);
 %se2 = [1 1 1; 1 1 1; 1 1 1];
@@ -16,12 +20,11 @@ if debug
 end
 removedStaff_only = bwareaopen(removedStaff_only, 2*staffSpace);
 if debug
-    figure('name','removedStaff_only'), imshow(removedStaff_only);
+    figure('name','removedStaff_only after opening with pixelsize'), imshow(removedStaff_only);
 end
 
 % remove staff out of image
 se = strel('line',3,90);
-%se2 = [1 1 1; 1 1 1; 1 1 1];
 removedStaff = img_rot;
 removedStaff = imopen(removedStaff,se);
 removedStaff = makeBinary(removedStaff);

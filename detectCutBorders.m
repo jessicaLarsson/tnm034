@@ -36,6 +36,9 @@ med = median(summeVertiFiltered);
 [vertPiks, vertLocs] = findpeaks(summeVertiFiltered(:));
 if debug
     figure('name','plot of summeVertiFiltered'),plot(summeVertiFiltered(:));
+    axis tight
+    xlabel('image columns [pixel]')
+    ylabel('low pass filtered summed pixels per column')
 end
 vertLocsCutted = vertLocs;%(vertPiks > med);
 vertPiksCutted = vertPiks;%(vertPiks > med);

@@ -17,7 +17,7 @@ stepSizeLocalHough = 0.05;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % global step
 
-degree = applyHough(b,-90,89.9,stepSizeGlobalHough);
+degree = applyHough(b,-90,89.9,stepSizeGlobalHough, debug);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % refinement step
@@ -38,7 +38,7 @@ if(debug)
     thetaEnde
 end
 
-degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough);
+degree = applyHough(b,thetaStart, thetaEnde,stepSizeLocalHough, debug);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % adapt got optimal rotation

@@ -1,6 +1,5 @@
 function [ boxes] = detectConnectedObjects( removedStaff, staffSpace )
-%UNTITLED5 Summary of this function goes here
-%   Detailed explanation goes here
+
 % get bounding boxes
 boundaries = bwboundaries(removedStaff);
 numberOfBoundaries = size(boundaries);

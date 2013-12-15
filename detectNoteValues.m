@@ -1,7 +1,7 @@
 function [ noteValues ] = detectNoteValues( removedStaff,img_rot,startStaffSystem, staffSpace, boxes, noteHeads )
 
 debug = 0;
-%1 eingefärbte noten
+%1 boxen
 %2 histogramme
 
 % width right and left of note center point
@@ -24,18 +24,19 @@ if debug == 1
     figure('name','originalImageWithSomething'), imshow(img_rot);
     hold on;
 end
-
+%16 
 if debug > 0
-    noteStart = 10;
+    noteStart = 17;
     numNotes = 1;
-    staffStart = 4;
+    staffStart = 1;
     staffEnd = staffStart;
 end
 
-
+counter = -1;
 sizeBoxes = size(boxes);
 s = size(removedStaff);
 
+counter = counter +1;
 for staff = staffStart:staffEnd
     % for all red note heads
     
@@ -46,6 +47,7 @@ for staff = staffStart:staffEnd
     end
     
     for note = noteStart:noteEnd
+        counter = counter+1;
         %if debug > 0
         %disp('###################################################');
         %staff
@@ -79,14 +81,14 @@ for staff = staffStart:staffEnd
                 if(debug == 1)
                     
                     aabb = [];
-                    aabb = [aabb; left boxes(k).maxY];
-                    aabb = [aabb; left boxes(k).minY];
-                    aabb = [aabb; right boxes(k).minY];
-                    aabb = [aabb; right boxes(k).maxY];
-                    aabb = [aabb; left boxes(k).maxY];
+                    aabb = [aabb; left-1 boxes(k).maxY+1];
+                    aabb = [aabb; left-1 boxes(k).minY-1];
+                    aabb = [aabb; right+1 boxes(k).minY-1];
+                    aabb = [aabb; right+1 boxes(k).maxY+1];
+                    aabb = [aabb; left-1 boxes(k).maxY+1];
                     
                     
-                    plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
+                    plot(aabb(:,1),aabb(:,2), 'r', 'LineWidth', 3);
                 end
                 
                 if left < 1
@@ -145,7 +147,7 @@ for staff = staffStart:staffEnd
                     aabb = [aabb; finalCutLeft finalCutUp];
                     
                     
-                    plot(aabb(:,1),aabb(:,2), 'c', 'LineWidth', 2);
+                    plot(aabb(:,1),aabb(:,2), 'b', 'LineWidth', 3);
                     
                 end
                 
@@ -153,7 +155,11 @@ for staff = staffStart:staffEnd
                 res = im2bw(upperHalf + lowerHalf);
                 
                 if debug == 2
+                    %set(0,'DefaultFigureColor',[1 1 1])
+                    %set(0,'DefaultFigureColor','remove')
                     figure('name','res'),imshow(res);
+                    %set(gca,'LooseInset',get(gca,'TightInset'))
+                    imwrite(res, 'a.jpg', 'jpg')
                 end
                 
                 % cut upper part to get only "faehnchen"
@@ -164,6 +170,7 @@ for staff = staffStart:staffEnd
                 
                 if debug == 2
                     figure('name','res'),imshow(res);
+                    imwrite(res, 'b.jpg', 'jpg')
                 end
                 
                 
@@ -214,6 +221,9 @@ for staff = staffStart:staffEnd
                     
                     if debug == 2
                         figure('name','plot of hori projection'),bar(summeHorizFiltered);
+                        axis tight
+                            ylabel('value [pixel]')
+                            xlabel('vertical projection of columns [pixel]')
                     end
                     
                     
@@ -251,6 +261,7 @@ for staff = staffStart:staffEnd
                         finalCutLeft
                         finalCutRight
                         figure('name','resTotallyCutNeu'),imshow(res);
+                        imwrite(res, 'd.jpg', 'jpg')
                     end
                     
                     if debug == 1
@@ -264,14 +275,13 @@ for staff = staffStart:staffEnd
                         aabb = [aabb; finalCutRight finalCutUp];
                         aabb = [aabb; finalCutLeft finalCutUp];
                         
-                        
-                        plot(aabb(:,1),aabb(:,2), 'm', 'LineWidth', 2);
+                        orange = [0.0 0.8 0.0];
+                        plot(aabb(:,1),aabb(:,2), 'color',orange, 'LineWidth', 3);
                         
                     end
                     
                     %vertical projection
                     summeV = sum(res,2);
-                    summeH = sum(res,1);
                     summeVertiFiltered = summeV;
                     %fil = [1 1 1 1 1]
                     %fil = fil./sum(fil(:));
@@ -283,7 +293,10 @@ for staff = staffStart:staffEnd
                     
                     if debug == 2
                         figure('name','plot of vert projection'),plot(summeVertiFiltered);
-                        figure('name','plot of hori projection'),plot(summeH);
+                             view(90,90)
+                            axis tight
+                            ylabel('value [pixel]')
+                            xlabel('horizontal projection of bounding box')
                     end
                     
                     if max(summeVertiFiltered) < 4
@@ -294,7 +307,13 @@ for staff = staffStart:staffEnd
                         fil  = fil./sum(fil(:));
                         summeVertiFiltered = filter(fil,1,summeVertiFiltered);
                         if debug == 2
-                            figure('name','plot2 of vert projection'),plot(summeVertiFiltered);
+                            h = figure('name','plot2 of vert projection'),plot(summeVertiFiltered);
+                            view(90,90)
+                            axis tight
+                            ylabel('value [pixel]')
+                            xlabel('low pass filtered horizontal projection of bounding box')
+
+                            
                         end
                         
                         [vertPiks] = findpeaks(summeVertiFiltered);
@@ -308,10 +327,7 @@ for staff = staffStart:staffEnd
                         case 1 %1/8
                             noteValues(staff).data(note) = 8;
                         otherwise
-                            noteValues(staff).data(note) = 1;
-                            
-                            summeH = summeH(summeH(:) > 0);
-                            
+                            noteValues(staff).data(note) = 1;                            
                     end
                     unfinished = 0;
                 end
@@ -325,9 +341,9 @@ for staff = staffStart:staffEnd
         end
         
         
-        if debug == 1
-            drawNote(noteX,noteY,noteValues(staff).data(note));
-        end
+        %if debug == 1
+            %drawNote(noteX,noteY,noteValues(staff).data(note), staffSpace);
+        %end
     end
     
 end
