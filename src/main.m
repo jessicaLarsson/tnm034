@@ -13,38 +13,39 @@ close all;
 %easy pictures
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 scanFiles = [];
+testFiles = [];
 photFiles = [];
 %########## Dance %%%%%%%%%%%%%%%%%%%%%%%%%%%% 1
-file = {'Images_Training/im1s.jpg'};scanFiles = [scanFiles; file];
-file = {'Not existent   /im1c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im1s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Not existent   /im1c.jpg'};photFiles = [photFiles; file];
 
 %########## Julpolska %%%%%%%%%%%%%%%%%%%%%%%% 2
-file = {'Images_Training/im3s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im3c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im3s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im3c.jpg'};photFiles = [photFiles; file];
 
 %########## Allegro %%%%%%%%%%%%%%%%%%%%%%%%%% 3
-file = {'Images_Training/im5s.jpg'};scanFiles = [scanFiles; file];
-file = {'Not existent   /im5c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im5s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Not existent   /im5c.jpg'};photFiles = [photFiles; file];
 
 %########## Pippi Langstrumpf %%%%%%%%%%%%%%%% 4
-file = {'Images_Training/im8s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im8c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im8s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im8c.jpg'};photFiles = [photFiles; file];
 
 %########## Bred dina varingar %%%%%%%%%%%%%%% 5
-file = {'Images_Training/im9s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im9c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im9s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im9c.jpg'};photFiles = [photFiles; file];
 
 %########## Titanic %%%%%%%%%%%%%%%%%%%%%%%%%% 6
-file = {'Images_Training/im6s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im6c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im6s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im6c.jpg'};photFiles = [photFiles; file];
 
 %########## Naer det lider mot jul %%%%%%%%%%% 7
-file = {'Images_Training/im10s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im10c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im10s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im10c.jpg'};photFiles = [photFiles; file];
 
 %########## Allemande %%%%%%%%%%%%%%%%%%%%%%% 8
-file = {'Images_Training/im13s.jpg'};scanFiles = [scanFiles; file];
-file = {'Images_Training/im13c.jpg'};photFiles = [photFiles; file];
+file = {'../Images_Training/im13s.jpg'};scanFiles = [scanFiles; file];
+file = {'../Images_Training/im13c.jpg'};photFiles = [photFiles; file];
 
 
 %########## Guantanamera %%%%%%%%%%%%%%%%%%%% 9
@@ -53,7 +54,24 @@ file = {'Images_Training/im13c.jpg'};photFiles = [photFiles; file];
 %file = 'Images_Training/im15se.jpg';
 %scanFiles = [scanFiles; file];
 %scanFiles
-debug = 0;
+
+file = {'../Images_testing/example2new.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im2c.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im2s.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im7c.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im7s.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im11s_r4-5.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im11c_r4-5.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im15s_r3-4.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im17s_r2.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im20c_r1-1.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im22c.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im23c.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/im24c.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/n4f.jpg'}; testFiles = [testFiles; file];
+file = {'../Images_testing/n8f.jpg'}; testFiles = [testFiles; file];
+
+debug = 1;
 % 0 einzel
 % 1 mach alle dateien
 % 2 teste block
@@ -72,7 +90,7 @@ switch debug
 %         file = scanFiles(6);
 %         img = im2double(imread(char(file)));
 %         tnm034(img);
-        file = scanFiles(1);
+        file = testFiles(1);
         img = im2double(imread(char(file)));
         tnm034(img);
         
@@ -80,7 +98,7 @@ switch debug
         
         failedFiles = {};  %# To store a list of the files that failed to convert
         successFiles = {};
-        for file = scanFiles'
+        for file = testFiles'
             try%# Attempt to perform some computation
                 img = im2double(imread(char(file)));
                 tnm034(img);
